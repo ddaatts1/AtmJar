@@ -6,7 +6,6 @@ import com.mitec.business.dto.ReportPdfDTO;
 import com.mitec.business.model.Report;
 import com.mitec.business.model.ReportPDF;
 import com.mitec.business.repository.ReportPDFRepository;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

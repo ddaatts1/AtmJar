@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ATMService.iml" filepath="$PROJECT_DIR$/ATMService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-service/app-service.iml" filepath="$PROJECT_DIR$/app-service/app-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/atm-service.iml" filepath="$PROJECT_DIR$/web/atm-service.iml" />
     </modules>
   </component>
 </project>
