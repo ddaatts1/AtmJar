@@ -1,0 +1,84 @@
+That's a common issue with Windows Server environments! Here are several ways to get JDK installed without using Internet Explorer:
+Solution 1: Use PowerShell to Download
+Open PowerShell as Administrator and run:
+powershell# Create download directory
+New-Item -ItemType Directory -Force -Path C:\temp
+
+# Download OpenJDK 8 (this is a direct download link)
+$url = "https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u345-b01/OpenJDK8U-jdk_x64_windows_hotspot_8u345b01.zip"
+$output = "C:\temp\openjdk8.zip"
+Invoke-WebRequest -Uri $url -OutFile $output
+
+# Extract the JDK
+Expand-Archive -Path $output -DestinationPath "C:\Program Files\Java\" -Force
+Solution 2: Use Command Line (curl/wget alternative)
+Windows Server might have curl available:
+cmd# Check if curl is available
+curl --version
+
+# If available, download JDK
+curl -L -o "C:\temp\openjdk8.zip" "https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u345-b01/OpenJDK8U-jdk_x64_windows_hotspot_8u345b01.zip"
+Solution 3: Use Another Browser
+If available, try:
+
+Edge: Usually available on Windows Server 2016
+Chrome: If installed
+Firefox: If installed
+
+Open Command Prompt and type:
+cmdstart msedge
+# or
+start chrome
+# or
+start firefox
+Solution 4: Copy from Your Local Machine
+Since it works on your local computer:
+
+On your local machine, download JDK 8:
+
+Go to Adoptium
+Download OpenJDK 8 for Windows x64
+
+
+Transfer to server using:
+
+Remote Desktop copy/paste
+Network share
+USB drive
+SCP/SFTP if available
+
+
+
+Solution 5: Use Windows Package Manager (if available)
+Check if winget is available:
+cmdwinget --version
+If available:
+cmdwinget install Microsoft.OpenJDK.8
+Solution 6: Extract from Existing Installation
+If you have JDK on your local machine, you can copy the entire JDK folder:
+
+On your local machine: Copy C:\Program Files\Java\jdk1.8.0_XXX
+On server: Paste to C:\Program Files\Java\
+
+Recommended Steps:
+
+Try PowerShell method first (Solution 1)
+If that fails, use file transfer from your local machine (Solution 4)
+
+After Getting JDK:
+
+Extract/Install the JDK to C:\Program Files\Java\jdk1.8.0_XXX
+Set JAVA_HOME:
+
+cmdsetx JAVA_HOME "C:\Program Files\Java\jdk1.8.0_XXX" /M
+setx PATH "%JAVA_HOME%\bin;%PATH%" /M
+
+Restart Command Prompt and test:
+
+cmdjavac -version
+mvn -version
+
+Run your build:
+
+cmdmvn clean install
+Which approach would you prefer to try first? The PowerShell download method is usually the quickest if your server has internet access.
