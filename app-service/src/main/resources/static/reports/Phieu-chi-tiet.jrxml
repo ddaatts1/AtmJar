@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Phieu-chi-tiet" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2828483e-ee4c-4824-a668-7dc7ac7b8c40">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="receiver" class="java.lang.String"/>
+	<field name="department" class="java.lang.String"/>
+	<field name="phoneNumber" class="java.lang.String"/>
+	<field name="index" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="397" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="10" width="549" height="314" uuid="c2bb79f5-43a7-48e4-801f-6586cef1dcde">
+					<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Double"/>
+				</box>
+				<staticText>
+					<reportElement x="18" y="9" width="232" height="51" uuid="e9ae1a67-7e5d-46fd-9002-b9c33869fc7c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font fontName="VN-Arial" size="38" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MITEC Jsc.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="18" y="60" width="232" height="21" uuid="149c876b-60da-4896-b976-96763b9e504d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[298E Kim Mã - HÀ NỘI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="81" width="231" height="19" uuid="9fd43dfb-f417-4819-85ac-6673ba23e43a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TEL : (024) 37.261873 - 37.2681874]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="18" y="114" width="152" height="22" uuid="e78d8313-e247-4fa9-a08c-40b28eb7d998">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Người nhận:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="18" y="169" width="514" height="20" uuid="301423e0-ff7f-4336-84c0-23ce2d5c6c00">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{department}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="18" y="189" width="514" height="50" uuid="3eae3eae-a30d-4823-b629-356da967c023">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="110" y="240" width="422" height="24" uuid="b6737d31-99dd-4c71-8de8-8abe89c17e93">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{phoneNumber}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="18" y="240" width="92" height="24" uuid="7961412b-83d4-49fa-89f5-e4455463f7ee">
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Điện thoại: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="264" width="549" height="41" uuid="15a6feb3-0166-4e5f-bf13-425946ac0833">
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="VN-Arial" size="22" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[HÀNG DỄ VỠ, XIN NHẸ TAY, CẢM ƠN!]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="18" y="137" width="514" height="32" uuid="a06947e2-71a6-4f21-87fb-8f2bddebd114">
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{receiver}]]></textFieldExpression>
+				</textField>
+				<break>
+					<reportElement x="0" y="350" width="500" height="1" uuid="24ae8a10-e833-4694-8bd6-4a1b2626a030">
+						<printWhenExpression><![CDATA[$F{index} != null]]></printWhenExpression>
+					</reportElement>
+				</break>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

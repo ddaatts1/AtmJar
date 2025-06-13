@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title></title>
+	<style type="text/css">
+		p {
+			color: black;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		table {
+			border-collapse: collapse;
+			color: black;
+			font-family: 'Times New Roman', Times, serif;
+		}
+		table, td {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<p>Kính gửi quý khách hàng,</p>
+	<p>Chúng tôi đã bố trí cán bộ phối hợp với Quý Khách hàng thực hiện một số nội dung chi tiết như sau:</p>
+	<table>
+		<tr>
+     		<td colspan="12">Cán bộ thực hiện: <span>[[${job.user.fullName + " / Sđt: " + job.user.phoneNumber}]]</span></td>
+     	</tr>
+		<tr>
+			<td colspan="6">Serial No: <span>[[${job.atm.serialNumber}]]</span></td>
+			<td colspan="6">Thời gian bắt đầu: <span>[[${checkInTime}]]</span></td>
+		</tr>
+		<tr>
+			<td colspan="6">Vị trí đặt máy: <span>[[${job.atm.address}]]</span></td>
+			<td colspan="6">Thời gian kết thúc: <span>[[${completeTime}]]</span></td>
+		</tr>
+		<tr>
+			<td colspan="12">Công việc thực hiện: <span>Bảo trì định kỳ</span></td>
+		</tr>
+	</table>
+	<p>Trân trọng,</p>
+	<p>Công ty Cổ Phần Ứng dụng Khoa học và Công nghệ - MITEC</p>
+	<p>website: www.mitec.com.vn</p>
+	<p>Hotline: (84-24) 3726 1874</p>
+</body>
+</html>

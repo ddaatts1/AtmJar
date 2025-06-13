@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Quản lý người dùng</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		.btn-view{
+			cursor: pointer;
+		}
+		.btn-view:hover{
+			color: blue !important;
+		}
+		.btn-view-email{
+			cursor: pointer;
+		}
+		.btn-view-email:hover{
+			color: blue !important;
+		}
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		    padding-top: 21px;
+		}
+		.custom-search {
+			margin-top: 5px;
+			margin-right: 5px;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Danh sách người dùng')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='user')"></div>
+		
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-body">
+				<div class="row">
+						<div class="col-md-3">
+							<div class="form-group float-left">
+								<a th:href="@{/user/create}" type="button" class="btn btn-primary">Tạo mới</a>
+							</div>
+						</div>
+					</div>
+					<form th:action="@{/users}" method="get">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Người dùng</label>
+											<input class="form-control custom-search" th:value="${search}" type="text" name="search" placeholder="Nhập tên đăng nhập"/>
+										</div>
+									</div>
+									<div class="col-md-2 center">
+										<button type="submit" onclick="searchFunction()" class="btn btn-primary">Tìm kiếm</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					<div class="clearfix"></div>
+						<!--<input type="hidden" name="search" >-->
+					<!--<div class="col-md-12" style="width: 100%; overflow-x: scroll">-->
+					<div class="col-md-12">
+						<div th:include="/commons/pagination :: tblLength"></div>
+						<table class="table table-bordered" id="tblContract" style="min-width: 768px">
+							<tr>
+								<th class="text-center">STT</th>
+								<th class="text-center">Tên đăng nhập</th>
+								<th class="text-center">Họ tên</th>
+								<th class="text-center">Thiết bị di động</th>
+								<th class="text-center">Quyền truy cập</th>
+								<th class="text-center">Trạng thái</th>
+								<th class="text-center"></th>
+							</tr>
+							<tr th:each="user,iter : ${pages.content}" th:id="|tr-${user.username}|">
+								<td class="text-center">[[${iter.count + pages.size*pages.number}]]</td>
+								<td class="text-center">[[${user.username}]]</td>
+								<td class="text-center">[[${user.fullName}]]</td>
+								<td th:id="|td-${user.username}|">[[${user.deviceId}]]</td>
+								<td>[[${user.roles}]]</td>
+								<td class="text-center">[[${user.isActived ? 'Hoạt động' : 'Không hoạt động'}]]</td>
+								<td style="text-align: center;">
+									<a th:href="@{/user(id=${user.id})}" title="Sửa thông tin"><em class="fas fa-edit"></em></a>&nbsp
+									<a th:href="'javascript:void(0);'" th:attr="onclick=|removeDevice('${user.username}')|" title="Xóa thiết bị đang sử dụng"><em class="fas fa-sync-alt" style="color: limegreen"></em></a>&nbsp
+									<a th:href="'javascript:void(0);'" th:attr="onclick=|deleteUser('${user.username}')|" title="Xóa người dùng"><em class="fas fa-trash-alt" style="color: red"></em></a>
+								</td>
+							</tr>
+						</table>
+						</div>
+						<div th:include="/commons/pagination :: pagination"></div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+
+<script th:src="@{/assets/js/user.js}"></script>
+</body>
+</html>

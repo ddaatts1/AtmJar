@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Quản lý đơn vị chuyên trách</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Danh sách đơn vị chuyên trách')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='category', item='departments')"></div>
+		
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-body">
+					<form th:action="@{/departments}" method="get">
+					<div class="col-md-12" style="margin-bottom: 20px;">
+						<a class="btn btn-primary" type="button" th:href="'javascript:void(0);'" data-toggle="modal" data-target="#modal_createDepartment">Tạo mới</a>
+					</div>
+					<div class="clearfix"></div>
+					<div class="col-md-12">
+						<div th:include="/commons/pagination :: tblLength"></div>
+						<table class="table table-bordered table-hover" id="tblDepartment">
+							<thead>
+								<tr>
+									<th style="text-align: center;">STT</th>
+									<th style="text-align: center;">Đơn vị</th>
+									<th style="text-align: center;">Vùng hoạt động</th>
+									<th style="text-align: center">Hành động</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, iter: ${pages.content}">
+									<td style="text-align: center;">[[${iter.count + pages.number*pages.size}]]</td>
+									<td>[[${item.name}]]</td>
+									<th:block>
+										<td th:if="${item.region != null}">[[${item.region.name}]]</td>
+										<td th:unless="${item.region != null}"></td>
+									</th:block>
+									<td style="text-align: center">
+										<em class="fas fa-edit btn-edit" style="color: limegreen" th:attr="data-id=${item.id}"></em>
+										<em class="fas fa-trash-alt btn-delete" style="color: red" th:attr="data-id=${item.id}"></em>
+									</td>
+								</tr>
+								<tr th:if="${pages.totalElements eq 0}">
+									<td colspan="4" class="text-center">Không có dữ liệu</td>
+								</tr>
+							</tbody>
+						</table>
+						<div th:include="/commons/pagination :: pagination"></div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- Modal xem chi tiết -->
+<th:block>
+<div th:id="'modal_createDepartment'" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<form method="POST" id="formCreateDepartment">
+			<div class="modal-header" style="background-color: #63b175">
+				<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Thêm mới đơn vị chuyên trách</span>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="font-weight-bold">Đơn vị chuyên trách</label>
+					<input class="form-control" name="name" id="name" type="text" value="">
+				</div>
+				<div class="form-group">
+					<label for="name" class="col-sm-12 col-form-label">Vùng miền:</label>
+					<select class="form-control" id="region-create" name="region-create">
+	                    <option th:each="region : ${regions}" th:value="${region.id}">[[${region.name}]]</option>
+	              	</select>
+	              	<span class="error" id="department_err">Vui lòng vùng miền hoạt động.</span>
+              	</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-link" data-dismiss="modal">Đóng</button>
+				<button type="submit" class="btn btn-primary">Lưu</button>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+<div th:id="'modal_createDepartment2'" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<form method="POST" id="formUpdateDepartment">
+			<div class="modal-header" style="background-color: #63b175">
+				<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Chỉnh sửa đơn vị chuyên trách</span>
+			</div>
+			<div class="modal-body">
+				<input class="form-control" type="hidden" name="id_edit" id="id_edit">
+				<div class="form-group">
+					<label class="font-weight-bold">Đơn vị chuyên trách</label>
+					<input class="form-control" name="name_edit" id="name_edit" type="text" value="">
+				</div>
+				<div class="form-group">
+					<label for="name" class="col-sm-12 col-form-label">Vùng miền:</label>
+					<select class="form-control" id="region-edit" name="region-edit">
+	                    <option th:each="region : ${regions}" th:value="${region.id}">[[${region.name}]]</option>
+	              	</select>
+	              	<span class="error" id="department_edit_err">Vui lòng vùng miền hoạt động.</span>
+              	</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-link" data-dismiss="modal">Đóng</button>
+				<button type="submit" class="btn btn-primary">Cập nhật</button>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+</th:block>
+<!-- Modal xem chi tiết -->
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/categories/department.js}"></script>
+</body>
+</html>

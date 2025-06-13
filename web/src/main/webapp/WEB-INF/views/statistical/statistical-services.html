@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Báo cáo thống kê theo services</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		tr>th, tr>td{
+			vertical-align: inherit !important;
+		}
+		.btn-export{
+			float: right;
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+		@media screen and (max-width: 813px){
+			#table_scroll{
+				 overflow-x: scroll
+			}
+		}
+		.chart_div{
+			margin-top: 50px;
+			margin-bottom: 20px;
+		}
+		
+		.invalid-feedback {
+			font-size: 100% !important;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Báo cáo thống kê theo services')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='statistical', item='statistical-services')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<form method="GET" id="form_Search">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Hợp đồng</label>
+											<select class="form-control" name="contractId" id="contractId">
+												<option value="" th:disabled th:hidden>------ Tất cả hợp đồng ------</option>
+												<option th:each="contract : ${contracts}" th:value="${contract.id}"
+													th:selected="${contract.id eq contractId ? 'true' : 'false'}">
+													[[${contract.name}]]
+												</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Vùng</label>
+											<input type="hidden" id="regionParam" th:value="${regionId}" >
+											<select class="form-control" name="regionId" id="regionId">
+											<option value="" th:disabled th:hidden>------ Tất cả vùng miền ------</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Đơn vị</label>
+											<input type="hidden" id="departmentParam" th:value="${departmentId}" >
+											<select class="form-control" name="departmentId" id="departmentId">
+												<option value="" th:disabled th:hidden></option>
+
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian bắt đầu</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${startTime}">
+							                </div>
+						                </div>
+									</div>
+								
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian kết thúc</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${endTime}">
+							                </div>
+						                </div>
+									</div>
+									<div class="col-md-4" style="display: flex;flex-direction: row;align-content: center;align-items: center;flex-wrap: nowrap;justify-content: flex-start;padding-top: 14px;">
+										<button type="submit"  id="btn-submit-form" class="btn btn-primary">Tìm kiếm</button>
+										<a id="btn-export" class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất báo cáo</a>
+										<a id="btn-show-chart" class="btn btn-md btn-success btn-export"><em class="fas fa-chart-area"></em>&nbsp&nbspHiện đồ thị</a>
+										<a id="btn-hide-chart" class="btn btn-md btn-success btn-export" hidden><em class="fas fa-chart-area"></em>&nbsp&nbspẨn đồ thị</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+					<div class="chart_div" hidden>
+						<figure class="highcharts-figure">
+						  <div id="chart_content"></div>
+						</figure>
+					</div>
+					<div class="col-md-12" style="width: 100%; overflow-x: scroll">
+						<table class="table table-bordered " id="tblStatisticalServices">
+							<thead>
+								<tr>
+									<th class="text-center" rowspan="2">Đơn vị</th>
+									<th:block th:each="item, iter : ${months}">
+										<th class="text-center" colspan="2">[[${item}]]</th>
+									</th:block>
+								</tr>
+								<tr>
+									<th:block th:each="item, iter : ${months}">
+										<th class="text-center" >Số Services</th>
+										<!--<th class="text-center" >Số máy</th>-->
+										<th class="text-center" >Số service / Số máy</th>
+									</th:block>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, iter : ${data}">
+									<td>[[${item.name}]]</td>
+									<th:block th:each="service : ${item.months}">
+										<th:block th:if="${service?.countAtm}">
+											<td>[[${service.countService}]]</td>
+											<!--<td>[[${service.countAtm}]]</td>-->
+											<td>[[${#numbers.formatDecimal((1.0 * service.countService / service.countAtm), 1,2)}]]</td>
+										</th:block>
+										<th:block th:unless="${service?.countAtm}">
+											<td>0</td>
+											<td>0</td>
+											<td>0</td>
+										</th:block>
+									</th>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<script th:src="@{/assets/js/highcharts.js}"></script>
+<script th:src="@{/assets/js/statistical/statistical-services.js}"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style th:inline="text">
+	.page-wrap {
+		    min-height: 80vh;
+	}
+    body{
+        background: url("[[@{/assets/img/error.png}]]");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+<link rel="stylesheet" type="text/css" th:href="@{/assets/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/assets/css/bootstrap-grid.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/assets/css/bootstrap-reboot.css}">
+</head>
+<body>
+	<div class="page-wrap d-flex flex-row align-items-center">
+	    <div class="container">
+	        <div class="row justify-content-center">
+	            <div class="col-md-12 text-center">
+	                <span class="display-1 d-block font-weight-bold">[[${errorCode}]]</span>
+	                <div class="mb-4 lead"><span class="font-weight-bold">[[${errorMessage}]]</span></div>
+	                <a th:href="@{/login}" class="btn btn-link font-weight-bold">Quay lại đăng nhập</a>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

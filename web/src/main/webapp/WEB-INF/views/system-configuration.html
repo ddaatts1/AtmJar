@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Cấu hình hệ thống</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		form{
+			max-width: 576px;
+			margin:auto;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Cấu hình hệ thống')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='system-config')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<form id="formUpdateConfig" method="POST">
+						<input type="hidden" id="id" name="id" th:value="${config != null ? config.id : ''}">
+						<div class="form-group row">
+			                <label for="inputEmail3" class="col-md-2 col-sm-2 col-form-label">Host</label>
+			                <div class="col-md-10 col-sm-10">
+			                	<input disabled type="text" class="form-control" name="host" id="host" th:value="${config != null ? config.host : ''}" placeholder="smtp.gmail.com">
+			                </div>
+		                </div>
+		                <div class="form-group row">
+			                <label for="inputEmail3" class="col-md-2 col-sm-2 col-form-label">Port</label>
+			                <div class="col-sm-4">
+			                	<input disabled type="number" class="form-control" name="port" id="port" th:value="${config != null ? config.port : ''}" placeholder="578">
+			                </div>
+			                <label for="inputEmail3" class="col-md-2 col-sm-2 col-form-label">Protocol</label>
+			                <div class="col-sm-4">
+			                	<input disabled type="text" class="form-control" name="protocol" id="protocol" th:value="${config != null ? config.protocol : ''}" placeholder="smtp">
+			                </div>
+		                </div>
+		                <div class="form-group row">
+			                <label for="inputEmail3" class="col-md-2 col-sm-2 col-form-label">Email</label>
+			                <div class="col-md-10 col-sm-10">
+			                	<input type="text" class="form-control" name="username" id="username" th:value="${config != null ? config.username : ''}" placeholder="example@gmail.com">
+			                </div>
+		                </div>
+		                <div class="form-group row">
+			                <label for="inputEmail3" class="col-md-2 col-sm-2 col-form-label">Password</label>
+			                <div class="col-md-10 col-sm-10">
+			                	<input type="password" class="form-control" name="password" th:value="${config != null ? config.password : ''}" id="password">
+			                </div>
+		                </div>
+		                <div class="form-group row">
+			                <label for="inputEmail4" class="col-md-2 col-sm-2 col-form-label">Email nội bộ</label>
+			                <div class="col-md-10 col-sm-10">
+			                	<input type="text" class="form-control" name="internalEmail" th:value="${internalEmail.email}" id="internalEmail">
+			                </div>
+		                </div>
+		                <div class="form-group row">
+		                	<button type="submit" class="btn btn-md btn-success" style="margin: auto">Cập nhật</button>
+		                </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+
+<script type="text/javascript">
+	$("#formUpdateConfig").validate({
+	  	onfocusout: false,
+	  	onkeyup: false,
+	  	onclick: false,
+	  	errorElement: 'span',
+	  	rules: {
+	    	"host": {
+	      		required: true,
+	    	},
+	    	"protocol": {
+	      		required: true,
+	    	},
+	    	"port": {
+	      		required: true,
+	    	},
+	    	"username": {
+	      		required: true,
+	      		email: true,
+	    	},
+	    	"password": {
+	      		required: true,
+	    	},
+	  	},
+	  	messages: {
+	  		"host": {
+	      		required: "Vui lòng nhập host.",
+	    	},
+	    	"protocol": {
+	      		required: "Vui lòng nhập protocol.",
+	    	},
+	    	"port": {
+	      		required: "Vui lòng nhập port.",
+	    	},
+	    	"username": {
+	      		required: "Vui lòng nhập email.",
+	      		email: "Nhập đúng định dạng email",
+	    	},
+	    	"password": {
+	      		required: "Vui lòng nhập password.",
+	    	},
+	  	}
+	});
+	$(document).on('submit', '#formUpdateConfig', function(e){
+		e.preventDefault();
+		var form = $(this);
+	  	form.valid();
+	  	let id = $("#id").val();
+	  	let url = "";
+	  	let data = {};
+	  	if (id != "") {
+			url = getContextPath() + "/system-configuration/update";
+			data['id'] = id;
+		} else {
+			url = getContextPath() + "/system-configuration/save";
+		}
+
+		data['host'] = $('#host').val();
+		data['port'] = $('#port').val();
+		data['protocol'] = $('#protocol').val();
+		data['username'] = $('#username').val();
+		data['password'] = $('#password').val();
+		data['internalEmail'] = $('#internalEmail').val();
+		$.ajax({
+			type: "POST",
+			contentType: "application/json",
+			url: url,
+			data: JSON.stringify(data),
+			cache: false,
+			success: function(result) {
+				let data = jQuery.parseJSON(result);
+				if(data.status === 'success'){
+					toastr.success(data.messages);
+					
+				}
+				if(data.status === 'error'){
+					toastr.error(data.messages);
+				}
+			},
+			error: function(err, result) {
+				toastr.error(result);
+			}
+		});
+	});
+</script>
+</body>
+</html>

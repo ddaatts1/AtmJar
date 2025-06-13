@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Quản lý hợp đồng</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type="text/css">
+.portlet.light.bordered {
+	border: 1px solid #e1e1e1 !important;
+}
+
+.portlet.light {
+	padding: 12px 20px 15px 20px;
+	background-color: #fff;
+}
+
+.btn-view {
+	cursor: pointer;
+}
+
+.btn-view:hover {
+	color: blue !important;
+}
+
+.btn-view-email {
+	cursor: pointer;
+}
+
+.btn-view-email:hover {
+	color: blue !important;
+}
+
+.btn-view-report {
+	cursor: pointer;
+}
+
+.btn-view-report:hover {
+	color: blue !important;
+}
+#tblContract {
+	width: 100% !important;
+	margin: 0px !important;
+}
+
+.center {
+	display: flex;
+	flex-direction: row;
+	align-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	padding-top: 14px;
+}
+em.fas.fas.fa-file-excel.btn-import {
+    padding: 5px;
+}
+a#btn-export {
+    margin-right: 0px;
+}
+.modal-footer {
+    padding-right: 0px !important;
+}
+
+
+/* Additional CSS for modal scrolling and width adjustment */
+.modal-dialog {
+	max-width: 1000px; /* Adjust width as needed */
+}
+
+.modal-body {
+	max-height: 500px; /* Adjust height as needed */
+	overflow-y: auto;
+}
+
+/*.modal-content {*/
+/*	width: 876px;}*/
+
+/* pdf-upload-styles.css */
+#pdfPreview {
+	width: 100%;
+	height: 600px;
+	border: 1px solid #ddd;
+	margin-top: 20px;
+	position: relative;
+}
+
+.selected-position {
+	position: absolute;
+	border: 2px solid red;
+	background: rgba(255, 0, 0, 0.3);
+	cursor: pointer;
+}
+
+
+</style>
+
+
+
+
+
+	<link rel="stylesheet" th:href="@{/assets/richtexteditor/rte_theme_default.css}" />
+	<script th:src="@{/assets/richtexteditor/rte.js}"></script>
+	<script  th:src="@{/assets/richtexteditor/plugins/all_plugins.js}"></script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Danh sách hợp đồng')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='category', item='contracts')"></div>
+
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+						<input id="is-admin" type="hidden" value="true">
+					</th:block>
+					<div class="col-md-12" sec:authorize="hasRole('ROLE_ADMIN')">
+						<a class="btn btn-primary" type="button"
+							th:href="'javascript:void(0);'" data-toggle="modal"
+							data-target="#modal_createContract">Tạo mới</a>
+					</div>
+					<form th:action="@{/contracts}" method="get"
+						style="padding: 20px 0">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Loại hợp đồng</label> <select class="form-control"
+												name="type">
+												<option value="2"
+													th:selected="${type eq 2 ? 'true' : 'false'}">Hợp
+													đồng tập trung</option>
+												<option value="1"
+													th:selected="${type eq 1 ? 'true' : 'false'}">Hợp
+													đồng lẻ</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-2 center">
+										<button type="submit" onclick="searchFunction()"
+											class="btn btn-primary">Tìm kiếm</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div th:include="/commons/pagination :: tblLength"></div>
+						<div class="col-md-12" style="width: 100%; overflow-x: scroll">
+							<table class="table table-bordered " id="tblContract"
+								style="min-width: 768px">
+								<thead>
+									<tr>
+										<th style="text-align: center;">STT</th>
+										<th style="text-align: center;">Số hợp đồng</th>
+										<th style="text-align: center;">Ngân hàng</th>
+										<th style="text-align: center;">Thời gian bắt đầu</th>
+										<th style="text-align: center;">Thời gian kết thúc</th>
+										<th style="text-align: center;">Chu kỳ bảo trì (tháng)</th>
+										<th style="text-align: center;">Danh sách ATM</th>
+										<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+											<th style="text-align: center;">Danh sách email</th>
+											<th style="text-align: center;">Danh sách biên bản</th>
+
+											<th style="text-align: center;">Hành động</th>
+										</th:block>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, iter : ${pages.content}">
+										<td style="text-align: center;">[[${iter.count + pages.size*pages.number}]]</td>
+										<td>[[${item.name}]]</td>
+										<th:block>
+											<td th:if="${item.bank != null}">[[${item.bank.name}]]</td>
+											<td th:unless="${item.bank != null}"></td>
+										</th:block>
+										<td>[[${#temporals.format(item.startTime,
+											'dd/MM/yyyy')}]]</td>
+										<td>[[${#temporals.format(item.endTime, 'dd/MM/yyyy')}]]</td>
+										<td class="text-center">[[${item.maintenanceCycle}]]</td>
+										<td><a class="btn-view" th:attr="data-id=${item.id}">Xem
+												chi tiết</a></td>
+										<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+											<td><a class="btn-view-email"
+												th:attr="data-id=${item.id}">Xem chi tiết</a></td>
+
+											<td><a class="btn-view-report"
+												   th:attr="data-id=${item.id}">Xem chi tiết</a></td>
+
+
+											<td class="text-center">
+												<em class="fas fa-edit btn-edit"
+													style="color: limegreen" th:attr="data-id=${item.id}" title="Sửa hợp đồng">
+												</em>
+												<em class="fas fa-copy btn-copy" style="color: blue" th:attr="data-id=${item.id}"
+													title="Clone hợp đồng">
+												</em>
+												<em class="fas fa-trash-alt btn-delete" style="color: red"
+													th:attr="data-id=${item.id}" title="Xóa hợp đồng">
+												</em>
+												<em class="fas  fas fa-file-excel btn-import"
+													style="color: #ffc107" th:attr="data-id=${item.id}"
+													title="import ATM">
+												</em>
+											</td>
+										</th:block>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div th:include="/commons/pagination :: pagination"></div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal import -->
+	<th:block>
+		<div th:id="'import-atm'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px">LỰA CHỌN
+											FILE IMPORT</span>
+					</div>
+					<form enctype="multipart/form-data">
+						<div class="modal-body">
+							<div class="modal_content">
+							  <div id="contractParam"></div>
+									<div class="modal-body">
+										<div class="form-group form-group-float">
+											<input type="file" id="inputFile" name="inputFile"
+												class="form-control-uniform" accept=".xls,.xlsx" data-fouc>
+										</div>
+									</div>
+
+									<div class="modal-footer">
+										<button type="button" class="btn btn-link"
+											data-dismiss="modal">Close</button>
+										<button type="button" id="btnImport" name="btnImport"
+											class="btn bg-primary">
+											<em class="icon-download7 mr-2"></em>Import Excel
+										</button>
+									</div>
+								
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<!-- /modal import -->
+	<!-- Modal thêm mới -->
+	<th:block>
+		<div th:id="'modal_createContract'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px">Tạo mới hợp đồng</span>
+					</div>
+					<form id="formCreateContract" method="POST">
+						<div class="modal-body">
+							<div class="modal_content">
+								<div class="row">
+									<label for="name" class="col-sm-2 col-form-label">Số
+										hợp đồng:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" class="form-control" id="name" name="name"
+											placeholder="Số hợp đồng">
+									</div>
+									<label for="endTime" class="col-sm-2 col-form-label">Loại
+										hợp đồng:</label>
+									<div class="col-sm-4 form-group">
+										<select class="form-control" id="type" name="type">
+											<option value="1">Hợp đồng lẻ</option>
+											<option value="2">Hợp đồng tập trung</option>
+										</select>
+									</div>
+								</div>
+								<div class="row">
+									<label for="name" class="col-sm-2 col-form-label">Ngân
+										hàng:</label>
+									<div class="form-group col-sm-4">
+										<select class="form-control select2" id="bank" name="bank">
+											<option value="">Chọn ngân hàng</option>
+											<option th:each="bank : ${banks}" th:value="${bank.id}">[[${bank.name}]]</option>
+										</select>
+									</div>
+									<label for="name" class="col-sm-2 col-form-label">Chu
+										kỳ bảo trì:</label>
+									<div class="col-sm-4 form-group">
+										<input type="number" class="form-control col-sm-12"
+											id="maintenance_cycle" name="maintenance_cycle"
+											placeholder="Tháng">
+									</div>
+								</div>
+								<div class="row">
+									<label for="startTime" class="col-sm-2 col-form-label">Ngày
+										bắt đầu:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" 
+											class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+											data-mask>
+									</div>
+									<label for="endTime" class="col-sm-2 col-form-label">Ngày
+										kết thúc:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" 
+											class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+											data-mask>
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-sm-12 col-form-label">Danh sách máy
+										ATM</label>
+								</div>
+								<div class="form-group">
+									<select class="duallistbox form-control" multiple="multiple"
+										id="listItem" name="listItem">
+										<option th:each="atm : ${atms}" th:value="${atm.serialNumber}">[[${atm.serialNumber}]]
+											- [[${atm.address}]]</option>
+									</select> <span class="error" id="listItemErr"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary">Lưu</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div th:id="'modal_createContract2'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px">Sửa hợp đồng</span>
+					</div>
+					<form id="formUpdateContract" method="POST">
+						<div class="modal-body">
+							<div class="modal_content">
+								<div class="row">
+									<input type="hidden" id="id_edit"> <label for="name"
+										class="col-sm-2 col-form-label">Số hợp đồng:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" class="form-control" id="name_edit"
+											name="name_edit" placeholder="Số hợp đồng">
+									</div>
+									<label for="endTime" class="col-sm-2 col-form-label">Loại
+										hợp đồng:</label>
+									<div class="col-sm-4 form-group">
+										<select class="form-control" id="type_edit" name="type_edit">
+											<option value="1">Hợp đồng lẻ</option>
+											<option value="2">Hợp đồng tập trung</option>
+										</select>
+									</div>
+								</div>
+								<div class="row">
+									<label for="name" class="col-sm-2 col-form-label">Ngân
+										hàng:</label>
+									<div class="form-group col-sm-4">
+										<select class="form-control select2" id="bank_edit"
+											name="bank_edit">
+											<option value="">Chọn ngân hàng</option>
+											<option th:each="bank : ${banks}" th:value="${bank.id}">[[${bank.name}]]</option>
+										</select>
+									</div>
+									<label for="name" class="col-sm-2 col-form-label">Chu
+										kỳ bảo trì:</label>
+									<div class="col-sm-4 form-group">
+										<input type="number" class="form-control col-sm-12"
+											id="maintenance_cycle_edit" name="maintenance_cycle_edit"
+											placeholder="Tháng">
+									</div>
+								</div>
+								<div class="row">
+									<label for="startTime" class="col-sm-2 col-form-label">Ngày
+										bắt đầu:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" placeholder="Nhập ngày" id="startTime_edit" name="startTime_edit" 
+											class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+											data-mask>
+									</div>
+									<label for="endTime" class="col-sm-2 col-form-label">Ngày
+										kết thúc:</label>
+									<div class="col-sm-4 form-group">
+										<input type="text" placeholder="Nhập ngày" id="endTime_edit" name="endTime_edit" 
+											class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+											data-mask>
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-sm-12 col-form-label">Danh sách máy
+										ATM</label>
+								</div>
+								<div class="form-group">
+									<select class="duallistbox form-control" multiple="multiple"
+										id="listItem_edit" name="listItem_edit">
+										<option th:each="atm : ${atms}" th:value="${atm.serialNumber}">[[${atm.serialNumber}]]
+											- [[${atm.address}]]</option>
+									</select> <span class="error" id="listItemErr_edit"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Cập nhật</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<!-- Modal thêm mới -->
+
+	<!-- Modal clone -->
+	<div th:id="'modal_createContract3'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title"
+						style="color: white; font-size: 20px">Clone hợp đồng mới</span>
+				</div>
+				<form id="formCloneContract" method="POST">
+					<div class="modal-body">
+						<div class="modal_content">
+							<div class="row">
+								<input type="hidden" id="id_edit"> <label for="name"
+									class="col-sm-2 col-form-label">Số hợp đồng:</label>
+								<div class="col-sm-4 form-group">
+									<input type="text" class="form-control" id="name_clone"
+										name="name_clone" placeholder="Số hợp đồng">
+								</div>
+								<label for="endTime" class="col-sm-2 col-form-label">Loại
+									hợp đồng:</label>
+								<div class="col-sm-4 form-group">
+									<select class="form-control" id="type_clone" name="type_clone">
+										<option value="1">Hợp đồng lẻ</option>
+										<option value="2">Hợp đồng tập trung</option>
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<label for="name" class="col-sm-2 col-form-label">Ngân
+									hàng:</label>
+								<div class="form-group col-sm-4">
+									<select class="form-control select2" id="bank_clone"
+										name="bank_clone">
+										<option value="">Chọn ngân hàng</option>
+										<option th:each="bank : ${banks}" th:value="${bank.id}">[[${bank.name}]]</option>
+									</select>
+								</div>
+								<label for="name" class="col-sm-2 col-form-label">Chu kỳ
+									bảo trì:</label>
+								<div class="col-sm-4 form-group">
+									<input type="number" class="form-control col-sm-12"
+										id="maintenance_cycle_clone" name="maintenance_cycle_clone"
+										placeholder="Tháng">
+								</div>
+							</div>
+							<div class="row">
+								<label for="startTime" class="col-sm-2 col-form-label">Ngày
+									bắt đầu:</label>
+								<div class="col-sm-4 form-group">
+									<input type="text" placeholder="Nhập ngày" id="startTime_clone" name="startTime_clone" 
+										class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+										data-mask>
+								</div>
+								<label for="endTime" class="col-sm-2 col-form-label">Ngày
+									kết thúc:</label>
+								<div class="col-sm-4 form-group">
+									<input type="text" placeholder="Nhập ngày" id="endTime_clone" name="endTime_clone" 
+										class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" 
+										data-mask>
+								</div>
+							</div>
+							<div class="row">
+								<label class="col-sm-12 col-form-label">Danh sách máy
+									ATM</label>
+							</div>
+							<div class="form-group">
+								<select class="duallistbox form-control" multiple="multiple"
+									id="listItem_clone" name="listItem_clone">
+									<option th:each="atm : ${atms}" th:value="${atm.serialNumber}">[[${atm.serialNumber}]]
+										- [[${atm.address}]]</option>
+								</select> <span class="error" id="listItemErr_clone"></span>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+						<button type="submit" class="btn btn-primary">Clone</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Modal clone -->
+
+	<!-- Modal danh sách ATM -->
+	<th:block>
+		<div th:id="'modal_atms'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px">Danh sách ATM của
+							hợp đồng</span>
+					</div>
+					<div class="modal-body">
+						<div class="modal_content">
+							<div class="modal-footer"
+								style="display: flex; flex-direction: row; align-content: center; align-items: center; flex-wrap: nowrap; justify-content:  flex-end; padding-top: 14px;">
+								<div id="searchResult"></div>
+								<!-- <button type="button" class="btn btn-md btn-warning btn-export"
+									style="background-color: #28a745; color: #fff"
+									data-toggle="modal" data-target="#modal_import_atm_data"
+									data-backdrop="static" data-keyboard="false">
+									<em class="icon-cloud-download2"></em> Import data
+								</button> -->
+								<a href="#" id="btn-export"
+									class="btn btn-md btn-warning btn-export"><em
+									class="fas fa-file-excel"></em>&nbsp&nbspXuất danh sách ATM của
+									hợp đồng</a>
+
+
+							</div>
+							<table class="table table-bordered table-hover" id="tblATM"
+								style="width: 100%">
+								<thead>
+									<tr>
+										<td class="text-center">STT</td>
+										<td class="text-center">Serial Number</td>
+										<td class="text-center">Địa chỉ</td>
+										<td class="text-center" sec:authorize="hasRole('ROLE_ADMIN')">Hành động</td>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<!-- Modal danh sách bao cao -->
+	<th:block>
+		<div th:id="'modal_report'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+
+						<span class="font-weight-bold modal-title"
+							  style="color: white; font-size: 20px">Danh sách báo cáo của hợp đồng</span>
+					</div>
+					<div class="modal-body">
+						<div class="modal_content">
+							<div class="modal-footer"
+								 style="display: flex; flex-direction: row; align-content: center; align-items: center; flex-wrap: nowrap; justify-content:  flex-end; padding-top: 14px;">
+								<div id="searchResult1"></div>
+								<!-- <button type="button" class="btn btn-md btn-warning btn-export"
+									style="background-color: #28a745; color: #fff"
+									data-toggle="modal" data-target="#modal_import_atm_data"
+									data-backdrop="static" data-keyboard="false">
+									<em class="icon-cloud-download2"></em> Import data
+								</button> -->
+								<a href="#" id="btn-add"
+								   class="btn btn-md btn-warning btn-add"><em
+										class="fas fa-file-excel"></em>&nbsp&nbspThêm mẫu báo cáo</a>
+
+							</div>
+							<table class="table table-bordered table-hover" id="tblReport"
+								   style="width: 100%">
+								<thead>
+								<tr>
+									<td class="text-center">STT</td>
+									<td class="text-center">Tên</td>
+<!--									<td class="text-center">Địa chỉ</td>-->
+									<td class="text-center" sec:authorize="hasRole('ROLE_ADMIN')">Hành động</td>
+								</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<!-- Modal danh sách ATM -->
+	<!-- Modal danh sách Email khách hàng -->
+	<th:block>
+		<div th:id="'modal_emails'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px"> Danh sách Email
+							khách hàng </span>
+					</div>
+					<div class="modal-body">
+						<div class="modal_content">
+							<input hidden id="modal-contract-id">
+							<div class="row form-group d-flex justify-content-center" sec:authorize="hasRole('ROLE_ADMIN')">
+								<input id="email-input" type="email"
+									class="form-control col-md-8" style="margin-top: 0.5%;"
+									placeholder="Thêm email khách hàng" />
+								<button class="btn btn-primary" type="button" id="add-email">Thêm</button>
+							</div>
+							<table class="table table-bordered table-hover" id="tblEmail"
+								style="width: 100%">
+								<thead>
+									<tr>
+										<th class="text-center">STT</th>
+										<th class="text-center">Email</th>
+										<th class="text-center">Loại email</th>
+										<th class="text-center">Hành động</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<!-- Modal danh sách Email khách hàng -->
+
+	<!-- Modal edit orderNumber -->
+	<th:block>
+		<div th:id="'modal_edit_order'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title"
+							style="color: white; font-size: 20px">Thông tin ATM</span>
+					</div>
+					<form id="formUpdateOrder" method="POST">
+						<div class="modal-body">
+							<div class="modal_content">
+								<input type="hidden" id="id_edit_order"> <input
+									type="hidden" id="contractId_edit_order">
+								<div class="form-group">
+									<label>Serial number: &nbsp</label> <span
+										id="serial_edit_order"></span>
+								</div>
+								<div class="form-group">
+									<label>Địa chỉ: &nbsp</label> <span id="address_edit_order"></span>
+								</div>
+								<div class="form-group">
+									<label>Thứ tự trong hợp đồng: &nbsp</label> 
+									<input id="orderNumber_edit_order"/>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Lưu</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<!-- Modal edit report -->
+	<th:block>
+		<div th:id="'modal_edit_report'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content"style="width: 900px">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Thông tin báo cáo</span>
+					</div>
+					<form id="formUpdateOrder1" method="POST">
+						<div class="modal-body">
+							<div class="modal_content" >
+								<input type="hidden" id="id_edit_report"> <input
+									type="hidden" id="contractId_edit_report">
+								<div id="div_editor1">
+								</div>
+								<script>
+									document.addEventListener("DOMContentLoaded", function() {
+										window.editor1 = new RichTextEditor("#div_editor1");
+									});
+								</script>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Lưu</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+
+	<!-- Modal add report -->
+<!--	<th:block>-->
+<!--		<div th:id="'modal_add_report'" class="modal fade" tabindex="-1">-->
+<!--			<div class="modal-dialog modal-md">-->
+<!--				<div class="modal-content"style="width: 900px">-->
+<!--					<div class="modal-header" style="background-color: #63b175">-->
+<!--						<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Thêm mẫu báo cáo 1</span>-->
+<!--					</div>-->
+<!--					<form id="formAddReport" method="POST">-->
+<!--						<div class="modal-body">-->
+<!--							<div class="modal_content" >-->
+<!--								<input type="hidden" id="id_add_report">-->
+<!--								<input type="text" id="report_name">-->
+<!--								<div id="div_editor2">-->
+<!--								</div>-->
+<!--								<script>-->
+<!--									document.addEventListener("DOMContentLoaded", function() {-->
+<!--										window.editor2 = new RichTextEditor("#div_editor2"); // Store reference in window object-->
+<!--									});-->
+<!--								</script>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="modal-footer">-->
+<!--							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>-->
+<!--							<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Thêm</button>-->
+<!--						</div>-->
+<!--					</form>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</th:block>-->
+
+
+	<!-- pdf-upload-form.html -->
+<!--	<div th:id="'modal_add_report'" class="modal fade" tabindex="-1">-->
+<!--		<div class="modal-dialog modal-md">-->
+<!--			<div class="modal-content" style="width: 900px">-->
+<!--				<div class="modal-header" style="background-color: #63b175">-->
+<!--					<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Upload PDF and Set Text Positions</span>-->
+<!--				</div>-->
+<!--				<form id="uploadForm" method="post" enctype="multipart/form-data" action="/report/upload">-->
+<!--					<div class="modal-body">-->
+<!--						<div class="modal_content">-->
+<!--							<input type="hidden" id="id_add_report" name="id_add_report">-->
+<!--							<input type="file" id="reportFile" name="file" accept="application/pdf" required />-->
+<!--							<br><br>-->
+<!--							&lt;!&ndash; Coordinates for four text positions &ndash;&gt;-->
+<!--							<label for="xPosition1">X Position 1:</label>-->
+<!--							<input type="number" id="xPosition1" name="xPosition1" placeholder="X Position 1" required />-->
+<!--							<label for="yPosition1">Y Position 1:</label>-->
+<!--							<input type="number" id="yPosition1" name="yPosition1" placeholder="Y Position 1" required />-->
+<!--							<br><br>-->
+<!--							<label for="xPosition2">X Position 2:</label>-->
+<!--							<input type="number" id="xPosition2" name="xPosition2" placeholder="X Position 2" required />-->
+<!--							<label for="yPosition2">Y Position 2:</label>-->
+<!--							<input type="number" id="yPosition2" name="yPosition2" placeholder="Y Position 2" required />-->
+<!--							<br><br>-->
+<!--							<label for="xPosition3">X Position 3:</label>-->
+<!--							<input type="number" id="xPosition3" name="xPosition3" placeholder="X Position 3" required />-->
+<!--							<label for="yPosition3">Y Position 3:</label>-->
+<!--							<input type="number" id="yPosition3" name="yPosition3" placeholder="Y Position 3" required />-->
+<!--							<br><br>-->
+<!--							<label for="xPosition4">X Position 4:</label>-->
+<!--							<input type="number" id="xPosition4" name="xPosition4" placeholder="X Position 4" required />-->
+<!--							<label for="yPosition4">Y Position 4:</label>-->
+<!--							<input type="number" id="yPosition4" name="yPosition4" placeholder="Y Position 4" required />-->
+<!--							<br><br>-->
+<!--							<div id="pdfPreview"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="modal-footer">-->
+<!--						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>-->
+<!--						<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Submit</button>-->
+<!--					</div>-->
+<!--				</form>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--	<div th:id="'modal_add_report'" class="modal fade" tabindex="-1">-->
+<!--		<div class="modal-dialog modal-lg">-->
+<!--			<div class="modal-content">-->
+<!--				<div class="modal-header bg-success text-white">-->
+<!--					<h5 class="modal-title">Upload PDF and Set Text Positions</h5>-->
+<!--					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--				</div>-->
+<!--				<form id="uploadForm" method="post" enctype="multipart/form-data" action="/report/upload">-->
+<!--					<div class="modal-body">-->
+<!--						<input type="number" hidden id="id_add_report" name="id_add_report">-->
+
+<!--						&lt;!&ndash; File Input &ndash;&gt;-->
+<!--						<div class="mb-3">-->
+<!--							<label for="reportFile" class="form-label">Select PDF File</label>-->
+<!--							<input type="file" id="reportFile" name="file" class="form-control" accept="application/pdf" required>-->
+<!--						</div>-->
+
+<!--						&lt;!&ndash; Radio Buttons for Page Selection &ndash;&gt;-->
+<!--						<fieldset class="mb-4">-->
+<!--							<legend class="form-label">Select Page</legend>-->
+<!--							<div class="form-check">-->
+<!--								<input type="radio" id="page1" name="pageSelect" value="1" class="form-check-input" checked>-->
+<!--								<label for="page1" class="form-check-label">Page 1</label>-->
+<!--							</div>-->
+<!--							<div class="form-check">-->
+<!--								<input type="radio" id="page2" name="pageSelect" value="2" class="form-check-input">-->
+<!--								<label for="page2" class="form-check-label">Page 2</label>-->
+<!--							</div>-->
+<!--						</fieldset>-->
+
+<!--						&lt;!&ndash; Coordinates Inputs &ndash;&gt;-->
+<!--						<div class="row mb-3">-->
+<!--							<div class="col">-->
+<!--								<label for="xPosition1" class="form-label">X Họ tên:</label>-->
+<!--								<input type="number" id="xPosition1" name="xPosition1" class="form-control" placeholder="X Position 1">-->
+<!--							</div>-->
+<!--							<div class="col">-->
+<!--								<label for="yPosition1" class="form-label">Y Họ tên:</label>-->
+<!--								<input type="number" id="yPosition1" name="yPosition1" class="form-control" placeholder="Y Position 1">-->
+<!--							</div>-->
+<!--						</div>-->
+
+<!--						<div class="row mb-3">-->
+<!--							<div class="col">-->
+<!--								<label for="xPosition2" class="form-label">X SĐT:</label>-->
+<!--								<input type="number" id="xPosition2" name="xPosition2" class="form-control" placeholder="X Position 2">-->
+<!--							</div>-->
+<!--							<div class="col">-->
+<!--								<label for="yPosition2" class="form-label">Y SĐT:</label>-->
+<!--								<input type="number" id="yPosition2" name="yPosition2" class="form-control" placeholder="Y Position 2">-->
+<!--							</div>-->
+<!--						</div>-->
+
+<!--						<div class="row mb-3">-->
+<!--							<div class="col">-->
+<!--								<label for="xPosition3" class="form-label">X Serial Number:</label>-->
+<!--								<input type="number" id="xPosition3" name="xPosition3" class="form-control" placeholder="X Position 3">-->
+<!--							</div>-->
+<!--							<div class="col">-->
+<!--								<label for="yPosition3" class="form-label">Y Serial Number:</label>-->
+<!--								<input type="number" id="yPosition3" name="yPosition3" class="form-control" placeholder="Y Position 3">-->
+<!--							</div>-->
+<!--						</div>-->
+
+<!--						<div class="row mb-3">-->
+<!--							<div class="col">-->
+<!--								<label for="xPosition4" class="form-label">X Vị trí đặt máy (dòng 1):</label>-->
+<!--								<input type="number" id="xPosition4" name="xPosition4" class="form-control" placeholder="X Position 4">-->
+<!--							</div>-->
+<!--							<div class="col">-->
+<!--								<label for="yPosition4" class="form-label">Y Vị trí đặt máy 1 (dòng 1):</label>-->
+<!--								<input type="number" id="yPosition4" name="yPosition4" class="form-control" placeholder="Y Position 4">-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="row mb-3">-->
+<!--						<div class="col">-->
+<!--							<label for="xPosition41" class="form-label">X Vị trí đặt máy (dòng 2):</label>-->
+<!--							<input type="number" id="xPosition41" name="xPosition41" class="form-control" placeholder="X Position 4.1">-->
+<!--						</div>-->
+<!--						<div class="col">-->
+<!--							<label for="yPosition41" class="form-label">Y Vị trí đặt máy 1 (dòng 2):</label>-->
+<!--							<input type="number" id="yPosition41" name="yPosition41" class="form-control" placeholder="Y Position 4.1">-->
+<!--						</div>-->
+<!--					</div>-->
+
+<!--						<div class="row mb-3">-->
+<!--							<div class="col">-->
+<!--								<label for="xPosition5" class="form-label">X Chữ kí:</label>-->
+<!--								<input type="number" id="xPosition5" name="xPosition5" class="form-control" placeholder="X Position 5">-->
+<!--							</div>-->
+<!--							<div class="col">-->
+<!--								<label for="yPosition5" class="form-label">Y Chữ kí:</label>-->
+<!--								<input type="number" id="yPosition5" name="yPosition5" class="form-control" placeholder="Y Position 5">-->
+<!--							</div>-->
+<!--						</div>-->
+
+<!--						<div id="pdfPreview" class="mt-3"></div>-->
+<!--					</div>-->
+<!--					<div class="modal-footer">-->
+<!--						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--						<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Submit</button>-->
+<!--					</div>-->
+<!--				</form>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+	<div th:id="'modal_add_report'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-success text-white">
+					<h5 class="modal-title">Upload DOC and Set Text Positions</h5>
+					<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form id="uploadForm" method="post" enctype="multipart/form-data" action="/report/upload">
+					<div class="modal-body">
+						<input type="number" hidden id="id_add_report" name="id_add_report">
+
+						<!-- File Input -->
+						<div class="mb-3">
+							<label for="reportFile" class="form-label">Select DOC File</label>
+							<input type="file" id="reportFile" name="file" class="form-control" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+						</div>
+
+												<div class="row mb-3">
+													<div class="col">
+														<label for="keyword1" class="form-label">Họ tên :</label>
+														<input type="text" id="keyword1" name="keyword1" class="form-control" placeholder="Keyword ">
+													</div>
+													<div class="col">
+														<label for="index1" class="form-label">thứ tự :</label>
+														<input type="number" id="index1" name="index1" class="form-control" placeholder="thứ tự">
+													</div>
+												</div>
+						<div class="row mb-3">
+							<div class="col">
+								<label for="keyword1" class="form-label">Serial number :</label>
+								<input type="text" id="keyword2" name="keyword2" class="form-control" placeholder="Keyword ">
+							</div>
+							<div class="col">
+								<label for="index2" class="form-label">thứ tự :</label>
+								<input type="number" id="index2" name="index2" class="form-control" placeholder="thứ tự">
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col">
+								<label for="keyword3" class="form-label">Địa chỉ :</label>
+								<input type="text" id="keyword3" name="keyword3" class="form-control" placeholder="Keyword ">
+							</div>
+							<div class="col">
+								<label for="index3" class="form-label">thứ tự :</label>
+								<input type="number" id="index3" name="index3" class="form-control" placeholder="thứ tự">
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col">
+								<label for="keyword4" class="form-label">Chữ ký :</label>
+								<input type="text" id="keyword4" name="keyword4" class="form-control" placeholder="Keyword ">
+							</div>
+							<div class="col">
+								<label for="index4" class="form-label">thứ tự :</label>
+								<input type="number" id="index4" name="index4" class="form-control" placeholder="thứ tự">
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col">
+								<label for="keyword5" class="form-label">Số điện thoại :</label>
+								<input type="text" id="keyword5" name="keyword5" class="form-control" placeholder="Keyword ">
+							</div>
+							<div class="col">
+								<label for="index5" class="form-label">thứ tự :</label>
+								<input type="number" id="index5" name="index5" class="form-control" placeholder="thứ tự">
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col">
+								<label for="keyword6" class="form-label">ATM ID :</label>
+								<input type="text" id="keyword6" name="keyword6" class="form-control" placeholder="Keyword ">
+							</div>
+							<div class="col">
+								<label for="index6" class="form-label">thứ tự :</label>
+								<input type="number" id="index6" name="index6" class="form-control" placeholder="thứ tự">
+							</div>
+						</div>
+
+						<div id="docPreview" class="mt-3"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+
+						<button type="submit" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div th:include="/commons/admin :: footer"></div>
+	<div th:include="/commons/admin :: js"></div>
+	<div th:include="/commons/pagination :: js"></div>
+	<script th:src="@{/assets/js/categories/contract.js}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.min.js"></script>
+
+
+</body>
+</html>

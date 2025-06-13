@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>ADMIN - Quản lý kho</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<style type="text/css">
+.portlet.light.bordered {
+	border: 1px solid #e1e1e1 !important;
+}
+
+.portlet.light {
+	padding: 12px 20px 15px 20px;
+	background-color: #fff;
+}
+.center {
+	display: flex;
+	flex-direction: row;
+	align-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	padding-top: 14px;
+}
+em.fas.fas.fa-file-excel.btn-import {
+    padding: 5px;
+}
+a#btn-export {
+    margin-right: 0px;
+}
+.modal-footer {
+    padding-right: 0px !important;
+}
+</style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div id="loader" style="display: none;"></div>
+	<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='ADMIN - Quản lý kho')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='inventories')"></div>
+
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+				  	<div class="col-md-12" style="margin-bottom: 20px;">
+						<a class="btn btn-primary" type="button" th:href="'javascript:void(0);'" data-toggle="modal"
+							data-target="#modal_create_inventory">Tạo mới</a>
+					</div>
+					<form th:action="@{/inventories}" method="get">
+						<div class="portlet light bordered" style="margin-bottom: 25px">
+							<div class="portlet-body">
+								<div class="clearfix"></div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Tên kho</label>
+											<input class="form-control" type="text" name="name"
+												id="name" th:value="${name}"
+												placeholder="Nhập tên kho" />
+										</div>
+									</div>
+									<div class="col-md-4" style="display: flex;flex-direction: row;align-content: center;align-items: center;flex-wrap: nowrap;justify-content: space-between;padding-top: 14px;">
+										<button type="submit" onclick="searchFunction()" id="btn_search" class="btn btn-primary">Tìm kiếm</button>
+										</div>
+								</div>
+							</div>
+						</div>
+					</form>
+						
+				<div class="clearfix"></div>
+				<div class="col-md-12" id="table_scroll">
+					<div th:include="/commons/pagination :: tblLength"></div>
+					<table class="table table-bordered table-hover" id="tblInventories" style="min-width: 768px;">
+						<thead>
+							<tr>
+								<th class="text-center">STT</th>
+								<th class="text-center">Tên kho</th>
+								<th class="text-center">Khu vực</th>
+								<th class="text-center">Địa chỉ kho</th>
+								<th class="text-center">Cán bộ quản lý kho</th>
+								<th class="text-center">Hành động</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item,iter : ${pages.content}">
+								<td class="text-center">[[${iter.count}]]</td>
+								<td>[[${item.name}]]</td>
+								<td>[[${item.regionName}]]</td>
+								<td>[[${item.address}]]</td>
+								<td>
+									<span th:each="user : ${item.users}">[[${user.username}]], </span>
+								</td>
+								<td class="text-center">
+									<a class="btn-edit" th:data-id="${item.id}"><em class="fas fa-edit" style="color: limegreen" title="Sửa"></em></a>
+									<a class="btn-delete" th:data-id="${item.id}"><em class="fas fa-trash-alt" style="color: red" title="Xóa"></em></a>
+								</td>
+							</tr>
+							<tr th:if="${pages.content.size() eq 0}">
+								<td colspan="6" class="text-center">Không có dữ liệu</td>
+							</tr>
+						</tbody>
+					</table>
+					<div th:include="/commons/pagination :: pagination" style="min-width: 768px;"></div>
+				</div>
+			  </div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal tạo mới -->
+	<div th:id="'modal_create_inventory'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Tạo mới kho</span>
+				</div>
+				<form id="formCreateInventory" method="POST">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="name" class="col-md-12 col-form-label">Tên kho * :</label>
+							<input type="text" class="col-md-12 form-control" id="name_create"
+								name="name_create" placeholder="Nhập tên kho">
+						</div>
+						<div class="form-group">
+							<label for="regionId" class="col-md-12 col-form-label">Khu vực:</label>
+							<select class="form-control" id="regionId_create" name="regionId_create">
+								<option value="">-------- Chọn khu vực --------</option>
+								<option value="1">Miền Trung</option>
+								<option value="2">Miền Nam</option>
+								<option value="3">Miền Bắc</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="address" class="col-md-12 col-form-label">Địa chỉ kho:</label>
+							<input type="text" class="col-md-12 form-control" id="address_create"
+								name="address_create" placeholder="Nhập địa chỉ kho">
+						</div>
+						<div class="form-group">
+							<label for="address" class="col-md-12 col-form-label">Cán bộ quản lý kho * :</label>
+							<select class="duallistbox form-control" multiple="multiple"
+								id="listItem" name="listItem">
+								<option th:each="user : ${users}" th:value="${user.id}">[[${user.username}]]</option>
+							</select> 
+							<span class="error" id="listItemErr"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+						<button type="submit" class="btn btn-primary">Tạo</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Modal tạo mới -->
+	<!-- Modal update -->
+	<div th:id="'modal_update_inventory'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Tạo mới kho</span>
+				</div>
+				<form id="formUpdateInventory" method="POST">
+					<div class="modal-body">
+						<input type="hidden" id="id_update" />
+						<div class="form-group">
+							<label for="name" class="col-md-12 col-form-label">Tên kho * :</label>
+							<input type="text" class="col-md-12 form-control" id="name_update"
+								name="name_update" placeholder="Nhập tên kho">
+						</div>
+						<div class="form-group">
+							<label for="regionId" class="col-md-12 col-form-label">Khu vực:</label>
+							<select class="form-control" id="regionId_update" name="regionId_update">
+								<option value="">-------- Chọn khu vực --------</option>
+								<option value="1">Miền Trung</option>
+								<option value="2">Miền Nam</option>
+								<option value="3">Miền Bắc</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="address" class="col-md-12 col-form-label">Địa chỉ kho:</label>
+							<input type="text" class="col-md-12 form-control" id="address_update"
+								name="address_update" placeholder="Nhập địa chỉ kho">
+						</div>
+						<div class="form-group">
+							<label for="address" class="col-md-12 col-form-label">Cán bộ quản lý kho * :</label>
+							<select class="duallistbox form-control" multiple="multiple"
+								id="listItem_update" name="listItem_update">
+								<option th:each="user : ${users}" th:value="${user.id}">[[${user.username}]]</option>
+							</select> 
+							<span class="error" id="listItemErr_update"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+						<button type="submit" class="btn btn-primary">Cập nhật</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Modal update -->
+	<div th:include="/commons/admin :: footer"></div>
+	<div th:include="/commons/admin :: js"></div>
+	<div th:include="/commons/pagination :: js"></div>
+	<script th:src="@{/assets/js/inventory/inventories-admin.js}"></script>
+</body>
+
+</html>

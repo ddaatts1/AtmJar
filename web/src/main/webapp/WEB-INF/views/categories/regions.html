@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Quản lý vùng miền</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Danh sách vùng miền')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='category', item='regions')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<div class="col-md-12" style="margin-bottom: 20px;">
+						<a class="btn btn-primary" type="button" th:href="'javascript:void(0);'" data-toggle="modal" data-target="#modal_updateRegion">Tạo mới</a>
+					</div>
+					<div class="clearfix"></div>
+					<form th:action="@{/regions}" method="get">
+					<div class="col-md-12">
+						<div th:include="/commons/pagination :: tblLength"></div>
+						<table class="table table-bordered table-hover" id="tblRegion">
+							<thead>
+								<tr>
+									<th style="text-align: center;">STT</th>
+									<th style="text-align: center;">Vùng</th>
+									<th style="text-align: center">Hành động</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="region,iter : ${pages.content}">
+									<td class="text-center">[[${iter.count + pages.size*pages.number}]]</td>
+									<td>[[${region.name}]]</td>
+									<td class="text-center">
+										<a class="btn-edit" th:data-id="${region.id}"><em class="fas fa-edit" style="color: limegreen"></em></a>
+										<a class="btn-delete" th:data-id="${region.id}"><em class="fas fa-trash-alt" style="color: red"></em></a>
+									</td>
+								</tr>
+								<tr th:if="${pages.totalElements eq 0}">
+									<td colspan="3" class="text-center">Không có dữ liệu</td>
+								</tr>
+							</tbody>
+						</table>
+						<div th:include="/commons/pagination :: pagination"></div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- Modal xem chi tiết -->
+<th:block>
+<div th:id="'modal_updateRegion'" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<form method="POST" id="formCreateRegion">
+			<div class="modal-header" style="background-color: #63b175">
+				<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Thêm mới vùng miền</span>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<label class="font-weight-bold">Vùng miền</label>
+					<input class="form-control" name="name" id="name" type="text" value="">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-link" data-dismiss="modal">Đóng</button>
+				<button type="submit" class="btn btn-primary">Lưu</button>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+
+<div th:id="'modal_updateRegion2'" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<form method="POST" id="formUpdateRegion">
+			<div class="modal-header" style="background-color: #63b175">
+				<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Chỉnh sửa vùng miền</span>
+			</div>
+			<div class="modal-body">
+				<input class="form-control" type="hidden" name="id_edit" id="id_edit">
+				<div class="row">
+					<label class="font-weight-bold">Vùng miền</label>
+					<input class="form-control" type="text" name="name_edit" id="name_edit" value="">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-link" data-dismiss="modal">Đóng</button>
+				<button type="submit" class="btn btn-primary">Cập nhật</button>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+</th:block>
+<!-- Modal xem chi tiết -->
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/categories/region.js}"></script>
+</body>
+</html>

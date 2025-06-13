@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Tra cứu</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		    padding-top: 14px;
+		}
+		
+		.select2-container {
+			width: auto !important;
+		}
+		
+		.select2-container .select2-selection--single {
+			height: 38px !important;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Tra cứu')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='search')"></div>
+		
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-body">
+					<form th:action="@{/search}" method="get">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Serial</label>
+											<input class="form-control" type="text" name="serial" id="serial" th:value="${serial}" placeholder="Nhập serial"/>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Địa chỉ máy</label>
+											<input class="form-control" type="text" name="address" id="address" th:value="${address}" placeholder="Nhập địa chỉ máy"/>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Trạng thái</label>
+											<select class="form-control" name="status" id="status">
+												<option value="" th:disabled th:hidden>--- Tất cả trạng thái ---</option>
+												<option value="0" th:selected="${status eq 0 ? 'true' : 'false'}">Đang thực hiện</option>
+												<option value="1" th:selected="${status eq 1 ? 'true' : 'false'}">Hủy</option>
+												<option value="2" th:selected="${status eq 2 ? 'true' : 'false'}">Hoàn thành</option>
+												<option value="3" th:selected="${status eq 3 ? 'true' : 'false'}">Không hoàn thành</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian bắt đầu</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${startTime}">
+							                </div>
+						                </div>
+									</div>
+								
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian kết thúc</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${endTime}">
+							                </div>
+						                </div>
+									</div>
+								
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Linh kiện thay thế</label>
+											<select class="form-control select2" name="accessory" id="accessory">
+												<option value="">--- Tất cả linh kiện ---</option>
+		                    					<option th:each="accessory : ${accessoryList}" th:value="${accessory.id}" th:selected="${accessoryValue eq accessory.id ? 'true' : 'false'}">[[${accessory.name}]]</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Loại service</label>
+											<select class="form-control" name="serviceType" id="serviceType">
+												<option value="" th:disabled th:hidden>------ Tất cả service ------</option>
+												<option value="0" th:selected="${serviceType eq 0 ? 'true' : 'false'}">Service onsite</option>
+												<option value="1" th:selected="${serviceType eq 1 ? 'true' : 'false'}">Hướng dẫn qua điện thoại</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6" style="display: flex; align-items: center; padding-top: 15px;">
+										<button type="submit" onclick="searchFunction()" class="btn btn-primary vertical-center">Tìm kiếm</button>
+										<a th:href="'javascript:void(0);'" type="button" class="btn btn-success" id="btn-export">
+											<em class="fas fa-file-excel"></em>&nbsp&nbsp&nbspXuất excel
+										</a>
+										<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+											<div style="display: contents;">
+												<a th:href="'javascript:void(0);'" type="button" class="btn btn-warning" onclick="deleteAllJobOnSearchView()">
+													<em class="fas fa-trash-alt" style="color: red"></em>&nbsp&nbsp&nbspXóa toàn bộ
+												</a>
+											</div>
+										</th:block>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tbl_search_result">
+							<div th:include="/commons/pagination :: tblLength"></div>
+							<table class="table table-bordered table-hover">
+								<tr>
+									<th class="text-center">STT</th>
+									<th class="text-center">Thời gian</th>
+									<th class="text-center">Serial</th>
+									<th class="text-center">Địa chỉ đặt máy</th>
+									<th class="text-center">Ghi chú</th>
+									<th class="text-center">Bảo&nbsptrì</th>
+									<th class="text-center">Trạng&nbspthái</th>
+									<th class="text-center">Linh kiện thay thế</th>
+									<th class="text-center">Chi tiết</th>
+								</tr>
+								<tr th:each="job, iter : ${pages.content}">
+									<td class="text-center">[[${iter.count + pages.size*pages.number}]]</td>
+									<td class="text-center" th:text="${#temporals.format(job.checkInTime, 'dd-MM-yyyy')}"></td>
+									<td th:text="${#strings.toUpperCase(job.atm.serialNumber)}"></td>
+									<td>[[${job.atm.address}]]</td>
+									<th:block th:if="${job.note != null}">
+										<th:block th:if="${#strings.length(job.note) < 100}">
+											<td th:text="${job.note}" style="background-color: lightsalmon;"></td>
+										</th:block>
+										<th:block th:unless="${#strings.length(job.note) < 100}">
+											<td th:text="${#strings.substring(job.note, 0, 99).concat('...')}"  style="background-color: lightsalmon;"></td>
+										</th:block>
+									</th:block>
+									<th:block th:unless="${job.note != null}">
+										<td></td>
+									</th:block>
+									<td>[[${job.isMaintenance ? "Bảo trì" : ""}]]</td>
+									<td>[[${job.statusDesc}]]</td>
+								
+									<td>
+										<span th:each="kpscs, iter : ${job.kpscs}">
+											<p th:each="replacementAccessories, iter : ${kpscs.replacementAccessories}">
+												[[${replacementAccessories.accessory.name}]]
+											</p>
+										</span>
+									</td>
+									<td class="text-center">
+										<a th:onclick="|showModal(${job.id})|" style="cursor: pointer;"><em class="fas fa-eye"></em></a>&nbsp&nbsp
+										<a sec:authorize="hasRole('ROLE_ADMIN')" href="javascript:void(0);" title="Sửa thời gian" th:attr="data-id=${job.id}" id="btnModalJobTime"><em class="fas fa-edit"></em></a>&nbsp&nbsp
+										<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="'javascript:void(0);'" th:attr="onclick=|deleteJobOnSearchView('${job.id}')|" title="Xóa task công việc"><em class="fas fa-trash-alt" style="color: red"></em></a>
+									</td>
+								</tr>
+							</table>
+							<div th:include="/commons/pagination :: pagination"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<div class="modal fade" id="modal-lg">
+   <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+       <div class="modal-header" style="background-color: #63b175">
+         <h4 class="font-weight-bold modal-title" style="color: white;">Chi tiết</h4>
+         <button type="button" class="close" onclick="closeModal()" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <div class="modal_content">
+             <table class="table table-bordered table-hover">
+             	<tr>
+             		<td colspan="12">Cán bộ thực hiện: <span id="modal-user"></span></td>
+             	</tr>
+				<tr>
+					<td colspan="6">Serial No: <span id="modal-serial"></span></td>
+					<td colspan="6">Thời gian bắt đầu: <span id="modal-startTime"></span></td>
+				</tr>
+				<tr>
+					<td colspan="6">Vị trí đặt máy: <span id="modal-address"></span></td>
+					<td colspan="6">Thời gian kết thúc: <span id="modal-endTime"></span></td>
+				</tr>
+				<tr>
+					<td colspan="12">Công việc thực hiện: <span id="modal-workDetail"></span></td>
+				</tr>
+				<tr>
+					<th colspan="12">I. Sự cố và giải pháp khắc phục</th>
+				</tr>
+				<tr id="tr-kpsc">
+					<th>STT</th>
+					<th colspan="1">Thiết bị</th>
+					<th colspan="4">Sự cố</th>
+					<th colspan="4">Giải pháp khắc phục</th>
+				</tr>
+				<tr>
+					<th colspan="12">II. Thiết bị thay thế</th>
+				</tr>
+				<tr id="tr-accessories">
+					<th>STT</th>
+					<th colspan="1">Thiết bị</th>
+					<th colspan="4">Mô tả</th>
+					<th colspan="4">Serial No.</th>
+				</tr>
+				<tr>
+					<td colspan="12" id="td-note">Ghi chú: <span id="modal-note"></span></td>
+				</tr>
+			</table>
+         </div>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" onclick="closeModal()">Đóng</button>
+       </div>
+     </div>
+     <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+</div>
+<th:block th:include="/components/modal-job-time :: modal"></th:block>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/job.js}"></script>
+</body>
+</html>

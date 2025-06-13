@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title> Báo cáo thống kê số lượng máy</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		tr>th, tr>td{
+			vertical-align: inherit !important;
+		}
+		.btn-export{
+			float: right;
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		    padding-top: 14px;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Báo cáo thống kê số lượng máy')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='statistical', item='amount-contractRegion')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<form action="#" method="get" id="form-search">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Hợp đồng</label>
+											<select class="form-control" name="contractId" id="contractId">
+												<option value="" th:disabled th:hidden>------ Tất cả hợp đồng đang hoạt động ------</option>
+												<option th:each="contract : ${contracts}" th:value="${contract.id}" 
+													th:selected="${contractId eq contract.id ? 'true' : 'false'}">
+													[[${contract.name}]]
+												</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Vùng</label>
+											
+											<select class="form-control" name="regionId" id="regionId">
+												<option value="" th:disabled th:hidden>------ Tất cả vùng miền ------</option>
+											</select>
+										</div>
+									</div>
+									
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Đơn vị phụ trách</label>
+											<select class="form-control" name="departmentId" id="departmentId">
+												
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian bắt đầu</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${startTime}">
+							                </div>
+						                </div>
+									</div>
+								
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian kết thúc</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask th:value="${endTime}">
+							                </div>
+						                </div>
+									</div>
+									<div class="col-md-4 center">
+										<button type="button" id="btn-submit-form"  style="display: none;" class="btn btn-primary">Tìm kiếm</button>
+										<button type="button" id="btn-submit-forms" value="1" class="btn btn-primary">Tìm kiếm</button>
+										<a href="#" id="btn-export" hidden class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất báo cáo</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					
+					<div id="searchResult"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/statistical/statistical-amountRegion.js}"></script>
+</body>
+</html>

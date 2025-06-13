@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Phieu-gui-hang-thong-tin-nguoi-nhan" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b82ffcab-f966-4df6-8573-6f8a03c82901">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="c6ff0984-5551-4079-80d3-4a3562c14a5f">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="partName" class="java.lang.String"/>
+		<field name="quantity" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="receiver" class="java.lang.String">
+		<parameterDescription><![CDATA[Tên người nhận]]></parameterDescription>
+	</parameter>
+	<parameter name="quantity" class="java.lang.String"/>
+	<parameter name="department" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="phoneNumber" class="java.lang.String"/>
+	<parameter name="parts" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="319" splitType="Stretch">
+			<frame>
+				<reportElement x="-5" y="5" width="549" height="314" uuid="b8cf16b1-22d8-41d5-ac1a-d6be4110f688"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Double"/>
+				</box>
+				<staticText>
+					<reportElement x="18" y="9" width="232" height="51" uuid="efbdf9b3-91aa-40c0-a1e3-c4e8f0dc2862">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font fontName="VN-Arial" size="38" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MITEC Jsc.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="18" y="60" width="232" height="21" uuid="9259cb33-a4b1-4aa5-b9c0-612822200043">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[298E Kim Mã - HÀ NỘI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="81" width="231" height="19" uuid="1c8c1da9-525f-4fde-aebc-781998cafcaf">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TEL : (024) 37.261873 - 37.2681874]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="18" y="114" width="152" height="22" uuid="4c2f645a-9db3-4a21-aeda-32fc9aa4a840">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Người nhận:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="18" y="169" width="514" height="20" uuid="e3f3776b-d003-46da-b025-211ab9aa4022">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$P{department}  != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{department}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="18" y="189" width="514" height="50" uuid="38b99a48-4c97-4567-b040-ce4a6bb61c03">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$P{address} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="110" y="240" width="422" height="24" uuid="e0a27523-9193-477e-a94e-086ab32c5f5a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$P{phoneNumber} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{phoneNumber}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="18" y="240" width="92" height="24" uuid="81ab2708-7528-470d-9dcc-4fd52dad7402">
+						<printWhenExpression><![CDATA[$P{phoneNumber} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Điện thoại: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="264" width="549" height="41" uuid="79d48b77-2088-4f0e-b988-d49455996102"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="VN-Arial" size="22" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[HÀNG DỄ VỠ, XIN NHẸ TAY, CẢM ƠN!]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="18" y="137" width="514" height="32" uuid="faa77897-c2bd-4a70-833f-3161794ba7f8">
+						<printWhenExpression><![CDATA[$P{receiver} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-Arial" size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{receiver}]]></textFieldExpression>
+				</textField>
+				<break>
+					<reportElement x="0" y="350" width="500" height="1" uuid="d72e5030-92ad-4497-a190-0d3ac6729cc8"/>
+				</break>
+			</frame>
+		</band>
+		<band height="532">
+			<staticText>
+				<reportElement x="31" y="160" width="238" height="29" uuid="7ce374ca-3c79-4d67-aa2e-f76e91ed88be"/>
+				<textElement>
+					<font fontName="VN-Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Danh sách linh kiện ATM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="125" width="268" height="24" uuid="6ccd2474-3801-48ad-9e8d-c03c7d7909b3">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="VN-Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEL : (024) 37.261873 - 37.2681874]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="50" width="269" height="51" uuid="dcde31e3-ab67-47ad-acdb-f0587ab3989d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="VN-Arial" size="38" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MITEC Jsc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="101" width="269" height="24" uuid="b8b472b9-6516-4824-a4f0-631bfea3df8f">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="VN-Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[298E Kim Mã - HÀ NỘI]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="31" y="190" width="512" height="211" uuid="691cc08f-30f1-4de2-b295-eea27c4f7bed">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="9f04e406-eeea-4d2c-90f0-6bb70c012118">
+						<dataSourceExpression><![CDATA[$P{parts}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="290" uuid="1ee51ccf-5909-4589-99a4-7bc4caccc632">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="290" height="30" uuid="a9577025-72c2-4311-ae56-15694016438d"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Linh kiện ]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="30">
+							<box>
+								<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="290" height="30" uuid="4817e30c-cec1-4bb4-bb30-a1e85df3ca38">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+									<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14"/>
+									<paragraph leftIndent="10" rightIndent="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{partName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="110" uuid="9a39af34-3ad2-4ec4-be11-fe6c0fb62589">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="110" height="30" uuid="f6088f76-e190-4f69-9932-83ef120881cc"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Số lượng]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="30">
+							<box>
+								<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="110" height="30" uuid="514f31b1-ed24-4e71-bfc0-58d6492c6dd1"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

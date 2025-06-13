@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Báo cáo tổng lượng theo hợp đồng</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		tr>th, tr>td{
+			vertical-align: inherit !important;
+		}
+		.btn-export{
+			float: right;
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+		
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		    padding-top: 14px;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar"></div>
+		<div th:include="/commons/admin :: sidebar(parent='statistical', item='amount-contract')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-header">
+					<h3>Báo cáo tổng lượng theo hợp đồng</h3>
+
+				</div>
+				<div class="card-body">
+					<form action="#" method="get" id="form-search">
+						<div class="portlet light bordered">
+							<div class="portlet-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Hợp đồng</label>
+											<select class="form-control select2" name="contractId" id="contractId">
+												<option value="" th:disabled th:selected="${contractId != null ? 'false' : 'true'}" th:hidden>Chọn hợp đồng</option>
+												<option th:each="contract : ${contracts}" th:value="${contract.id}" 
+													th:selected="${contractId eq contract.id ? 'true' : 'false'}">
+													[[${contract.name}]]
+												</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Vùng</label>
+											<select class="form-control" name="regionId" id="regionId">
+												<option value="" th:disabled th:selected="${regionId != null ? 'false' : 'true'}" th:hidden>Chọn vùng miền</option>
+												<option th:each="region : ${regions}" th:value="${region.id}"
+													th:selected="${regionId eq region.id ? 'true' : 'false'}">
+													[[${region.name}]]
+												</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Đơn vị phụ trách</label>
+											<select class="form-control" name="departmentId" id="departmentId">
+												<option value="" th:disabled th:selected="${departmentId != null ? 'false' : 'true'}" th:hidden>Chọn đơn vị phụ trách</option>
+												<option th:each="department : ${departments}" th:value="${department.id}"
+													th:selected="${departmentId eq department.id ? 'true' : 'false'}">
+													[[${department.name}]]
+												</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian bắt đầu</label>
+											<input type="date" class="form-control" name="startTime" id="startTime" th:value="${startTime}"/>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian kết thúc</label>
+											<input type="date" class="form-control" name="endTime" id="endTime" th:value="${endTime}"/>
+										</div>
+									</div>
+									<div class="col-md-4 center">
+										<button type="button" id="btn-submit-form" class="btn btn-primary">Tìm kiếm</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- <a href="#" id="btn-export" class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất báo cáo</a> -->
+					<div id="searchResult"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/statistical/statistical-amount.js}"></script>
+</body>
+</html>

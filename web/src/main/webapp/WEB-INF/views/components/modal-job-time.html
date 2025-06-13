@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insert title here</title>
+</head>
+<body>
+	
+<th:block th:fragment="modal">
+	<div class="modal fade" id="modalJobTime" tabindex="-1" aria-labelledby="modalJobTime" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+		       <div class="modal-header" style="background-color: #63b175">
+		         	<h4 class="font-weight-bold modal-title" style="color: white;">Chi tiết</h4>
+		         	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		           		<span aria-hidden="true">&times;</span>
+		         	</button>
+		       </div>
+				<div class="modal-body">
+					<div class="container">
+						<input type="hidden" id="jobId"/>
+						<table class="table table-bordered table-hover">
+			             	<tr>
+			             		<td colspan="12">Cán bộ thực hiện: <span id="modalTimeUser"></span></td>
+			             	</tr>
+			             	<tr>
+			             		<td colspan="12">Serial No: <span id="modalTimeSerial"></span></td>
+							</tr>
+			             	<tr>
+			             		<td colspan="12">Vị trí đặt máy: <span id="modalTimeAddress"></span></td>
+							</tr>
+			             	<tr>
+			             		<td colspan="12">Công việc thực hiện: <span id="modalTimeWorkDetail"></span></td>
+							</tr>
+							<tr>
+								<td colspan="6">Thời gian bắt đầu: <input type="datetime-local" class="form-control" id="modalTimeCheckIn"/></td>
+								<td colspan="6">Thời gian kết thúc: <input type="datetime-local" class="form-control" id="modalTimeCheckOut"/></td>
+							</tr>
+		             	</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="btnEditJobTime">Save</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+	
+</body>
+</html>

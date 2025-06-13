@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<!-- pagination -->
+<div th:fragment="pagination">
+<th:block th:if="${pages.totalPages > 1}">
+	<input type="hidden" name="size" id="size" th:value="${pages.size}">
+	<input type="hidden" name="page" id="page" th:value="${pages.number}">
+	
+	<nav aria-label="Pagination" th:if="${pages.totalPages gt 0}">
+	    <ul class="pagination justify-content-center font-weight-medium">
+	    	<li class="page-item" th:classappend="${pages.number eq 0} ? 'disabled'">
+	            <a class="page-link svg-icon"
+	               href="#"
+	               th:onclick="|submitSearchForm('1', $('#size').val(), $(this))|"
+	                rel="tooltip">First
+	                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
+	            </a>
+	        </li>
+	        <li class="page-item" th:classappend="${pages.number eq 0} ? 'disabled'">
+	            <a class="page-link svg-icon fa fa-backward"
+	               href="#"
+	               th:onclick="|submitSearchForm('${pages.number}', $('#size').val(), $(this))|"
+	               aria-label="Previous"
+	               title="Previous Page" rel="tooltip">
+	                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
+	            </a>
+	        </li>
+	        <li class="page-item disabled" th:if="${pages.number - 5 >= 0}">
+	            <a class="page-link svg-icon" href="#"> ...
+	                <span data-feather="more-horizontal" width="20" height="20"></span>
+	            </a>
+	        </li>
+	        
+	        <!--  -->
+	        <li class="page-item" th:if="${pages.number - 4 >= 0}">
+	            <a class="page-link"  href="#" th:text="${pages.number - 3}"
+	            th:onclick="|submitSearchForm('${pages.number - 3}', $('#size').val(), $(this))|"
+	               th:title="${'Page '+ (pages.number - 3)}"
+	               rel="tooltip"></a>
+	        </li>
+	        <li class="page-item" th:if="${pages.number - 3 >= 0}">
+	            <a class="page-link"  href="#" th:text="${pages.number - 2}"
+	            th:onclick="|submitSearchForm('${pages.number - 2}', $('#size').val(), $(this))|"
+	               th:title="${'Page '+ (pages.number - 2)}"
+	               rel="tooltip"></a>
+	        </li>
+	        <li class="page-item" th:if="${pages.number - 2 >= 0}">
+	            <a class="page-link"  href="#" th:text="${pages.number - 1}"
+	            th:onclick="|submitSearchForm('${pages.number - 1}', $('#size').val(), $(this))|"
+	               th:title="${'Page '+ (pages.number - 1)}"
+	               rel="tooltip"></a>
+	        </li>
+	        <li class="page-item" th:if="${pages.number - 1 >= 0}">
+	            <a class="page-link"  href="#" th:text="${pages.number}"
+	            th:onclick="|submitSearchForm('${pages.number}', $('#size').val(), $(this))|"
+	               th:title="${'Page '+ (pages.number)}"
+	               rel="tooltip"></a>
+	        </li>
+	        <!--  -->
+	        
+	        <li class="page-item" th:classappend="${i eq pages.number + 1} ? 'active'"
+	            th:each="i : ${#numbers.sequence( pages.number + 1, pages.totalPages > 10 + pages.number ? pages.number + 10 : pages.totalPages, 1)}">
+	            <a class="page-link"  href="#" th:text="${i}"
+	            th:onclick="|submitSearchForm('${i}', $('#size').val(), $(this))|"
+	               th:title="${'Page '+ i}"
+	               rel="tooltip"></a>
+	        </li>
+	        <li class="page-item disabled" th:if="${pages.number + 5 < pages.totalPages}">
+	            <a class="page-link svg-icon" href="#"> ...
+	                <span data-feather="more-horizontal" width="20" height="20"></span>
+	            </a>
+	        </li>
+	        <li class="page-item" th:classappend="${pages.number + 1 eq pages.totalPages} ? 'disabled'">
+	            <a class="page-link svg-icon fa fa-forward"
+	            href="#"
+	            th:onclick="|submitSearchForm('${pages.number + 2}', $('#size').val(), $(this))|"
+	               aria-label="Next"
+	               title="Next Page" rel="tooltip">
+	                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20"></span>
+	            </a>
+	        </li>
+	        <li class="page-item">
+	            <a class="page-link svg-icon"
+	              	href="#"
+	              	th:onclick="|submitSearchForm('${pages.totalPages}', $('#size').val() ,$(this))|"
+	               aria-label="Previous"
+	                th:title="${pages.totalPages}" rel="tooltip">Last
+	                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
+	            </a>
+	        </li>
+	    </ul>
+	</nav>
+</th:block>
+</div>
+<!-- /pagination -->
+
+<!-- show entries -->
+<div th:fragment="tblLength">
+	<div class="row">
+		<div class="col-md-6 float-left">
+			<label>
+				Show 
+				<select id="tblLength" th:onchange="|changePageSize('${pages.number + 1}',$(this))|">
+					<option value="10" th:selected="${pages.size eq 10 ? 'true' : 'false'}">10</option>
+					<option value="25" th:selected="${pages.size eq 25 ? 'true' : 'false'}">25</option>
+					<option value="50" th:selected="${pages.size eq 50 ? 'true' : 'false'}">50</option>
+					<option value="100" th:selected="${pages.size eq 100 ? 'true' : 'false'}">100</option>
+				</select>
+				 entries
+			</label>
+		</div>
+		<th:block th:if="${pages.totalElements gt 0}">
+			<div class="col-md-6 float-right" style="display: flex; flex-direction: row; justify-content: flex-end;">
+				<th:block th:if="${pages.totalPages > 1 && (pages.number + 1) < pages.totalPages}">
+					<label>[['Showing ' + ${pages.size * pages.number + 1} + ' to ' + ${pages.size * (pages.number + 1)} + ' of ' + ${pages.totalElements} + ' entries']]</label>
+				</th:block>
+				<th:block th:unless="${pages.totalPages > 1 && (pages.number + 1) < pages.totalPages}">
+					<label>[['Showing ' + ${pages.size * pages.number + 1} + ' to ' + ${pages.totalElements} + ' of ' + ${pages.totalElements} + ' entries']]</label>
+				</th:block>
+			</div>
+		</th:block>
+	</div>
+</div>
+<!-- show entries -->
+
+<th:block th:fragment="js">
+	<script>
+		function searchFunction(){
+			$('#page').val(1);
+		}
+	
+	    function submitSearchForm(page, size, $element) {
+	    	$("#page").val(page);
+	    	$("#size").val(size);
+	    	$element.closest("form").submit();
+	    };
+	    
+	    function changePageSize(page, $element) {
+		  	var sizeVal = $("#tblLength").children("option:selected").val();
+			submitSearchForm(page, sizeVal, $element)
+		};
+		
+		
+	</script>
+</th:block>
+</body>
+</html>

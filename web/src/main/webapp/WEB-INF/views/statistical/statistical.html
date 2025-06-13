@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Báo cáo tổng kết theo chu kỳ</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		tr>th, tr>td{
+			vertical-align: inherit !important;
+		}
+		.btn-export{
+			float: right;
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+		.tbl_search_result{
+			width: 100%;
+			border: 1px solid #dee2e6;
+			overflow-y: hidden;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+		}
+		.maintained{
+			background-color: #52a658;
+			color: #fff;
+		}
+		tr.title>th{
+			background-color: #52a658;
+			color: #fff;
+		}
+		tr.subTitle>td{
+			background-color: #829cf8;
+			color: #fff;
+		}
+		
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Báo cáo tổng kết theo chu kỳ')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='statistical', item='statistical')"></div>
+	
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="overlay" id="loading-statistical">
+				  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+				</div>
+				<div class="card-body">
+					<div class="portlet light bordered">
+						<div class="portlet-body">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Hợp đồng</label>
+										<select class="form-control" name="contractId" id="contractId">
+											<!--<option value="" th:disabled th:selected="${contractId != null ? 'false' : 'true'}" th:hidden>Chọn hợp đồng</option>-->
+											<option th:each="item : ${contracts}" th:value="${item.id}"
+												th:selected="${contractId eq item.id ? 'true' : 'false'}">
+												[[${item.name}]]
+											</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Thời gian bắt đầu</label>
+										<div class="input-group">
+						                    <div class="input-group-prepend">
+						                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+						                    </div>
+						                    <input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+						                </div>
+					                </div>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Thời gian kết thúc</label>
+										<div class="input-group">
+						                    <div class="input-group-prepend">
+						                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+						                    </div>
+						                    <input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+						                </div>
+					                </div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 center">
+									<button type="button" id="btn-submit-form" onclick="searchFunction()" class="btn btn-primary">Tìm kiếm</button>
+									<button id="btn-export" disabled="true" class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất báo cáo</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="searchResult"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/statistical/statistical.js}"></script>
+
+</body>
+</html>

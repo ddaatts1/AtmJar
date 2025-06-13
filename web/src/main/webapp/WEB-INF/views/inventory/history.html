@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>Lịch sử giao dịch</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<style type="text/css">
+	.span-data {
+		font-weight: 600;
+	}
+	.modal-footer {
+	    padding-right: 0px !important;
+	}
+</style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div id="loader" style="display: none;"></div>
+	<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Lịch sử gửi hàng')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='inventories', item=${inventoryId})"></div>
+
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<form th:action="@{/inventory/history}" method="get">
+						<input type="hidden" th:value="${inventoryId}" th:name="'inventoryId'" id="inventoryId"/>
+						<div class="portlet light bordered" style="margin-bottom: 25px">
+							<div class="portlet-body">
+								<div class="clearfix"></div>
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Tìm kiếm</label>
+											<input class="form-control" type="text" id="name"
+												name="name" th:value="${name}"
+												placeholder="Nhập tên người gửi hoặc người nhận" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Trạng thái</label>
+											<select class="form-control" name="status">
+												<option value="">------ Tất cả trạng thái ------</option>
+												<option value="0" th:selected="${status eq '0' ? 'true' : 'false'}">Đang chờ</option>
+												<option value="1" th:selected="${status eq '1' ? 'true' : 'false'}">Đã nhận</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Giao dịch</label>
+											<select class="form-control" name="type">
+												<option value="">------ Tất cả ------</option>
+												<option value="0" th:selected="${type eq '0' ? 'true' : 'false'}">Nhập kho</option>
+												<option value="1" th:selected="${type eq '1' ? 'true' : 'false'}">Xuất kho</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-3" style="display: flex;flex-direction: row;align-content: center;align-items: center;flex-wrap: nowrap;justify-content: space-between;padding-top: 14px;">
+										<button type="submit" onclick="searchFunction()" id="btn_search" class="btn btn-primary">Tìm kiếm</button>
+										<a type="button" th:href="@{/inventory/?id=} + ${inventoryId}" class="btn btn-default" style="align-items: flex-end;">Quay lại</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+						<div class="clearfix"></div>
+						<div class="col-md-12" id="table_scroll">
+							<div th:include="/commons/pagination :: tblLength"></div>
+							<table class="table table-bordered table-hover" id="tblInventories" style="min-width: 768px;">
+								<thead>
+									<tr>
+										<th class="text-center">STT</th>
+										<th class="text-center">Người gửi</th>
+										<th class="text-center">Người nhận</th>
+										<th class="text-center">Thời gian</th>
+										<th class="text-center">Giao dịch</th>
+										<th class="text-center">Trạng thái</th>
+										<th class="text-center">Số lượng</th>
+										<th class="text-center">Hành động</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, iter : ${pages.content}">
+										<td class="text-center">[[${iter.count + pages.number*pages.size}]]</td>
+										<td>[[${item.sender}]]</td>
+										<td>[[${item.receiver}]]</td>
+										<th:block th:if="${item.type eq 1}">
+											<td class="text-center" >[[${item.sendDateStr}]]</td>
+										</th:block>
+										<th:block th:unless="${item.type eq 1}">
+											<td class="text-center" >[[${item.receivedDateStr}]]</td>
+										</th:block>
+										<td class="text-center">[[${item.typeStr}]]</td>
+										<td class="text-center">[[${item.statusStr}]]</td>
+										<td class="text-center">[[${item.totalQuantity}]]</td>
+										<td class="text-center">
+											<th:block th:if="${item.type eq 1}">
+											
+											</th:block>
+											<th:block th:if="${item.type eq 1}">
+												<a href="javascript:void(0)" class="btn-view-issue" title="Xem chi tiết" th:attr="data-id=${item.id}"><em class="fas fa-eye"></em></a>
+											</th:block>
+											<th:block th:unless="${item.type eq 1}">
+												<a href="javascript:void(0)" class="btn-view-receipt" title="Xem chi tiết" th:attr="data-id=${item.id}"><em class="fas fa-eye"></em></a>
+											</th:block>
+										</td>
+									</tr>
+									<tr th:if="${pages.totalElements eq 0}">
+										<td colspan="8" class="text-center">Không có dữ liệu</td>
+									</tr>
+								</tbody>
+							</table>
+							<div th:include="/commons/pagination :: pagination" style="min-width: 768px;"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- 	Modal xem chi tiết   -->
+	<div th:id="'modal-view-issue'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Phiếu xuất hàng</span>
+				</div>
+					<div class="modal-body">
+						<input type="hidden" id="issue-trackingId" />
+						 <table class="table table-bordered table-hover">
+						 	<tr>
+								<th colspan="8">Thông tin phiếu</th>
+								<td colspan="4">Trạng thái: <span id="issue-status"></span></td>
+							</tr>
+						 	<tr>
+								<td colspan="8">Người gửi: <span id="issue-sender"></span></td>
+								<td colspan="4">Ngày gửi: <span id="issue-send-date"></span></td>
+							</tr>
+							<tr>
+								<td colspan="8">Người nhận: <span id="issue-receiver"></span></td>
+								<td colspan="4">Ngày nhận: <span id="issue-received-date"></span></td>
+							</tr>
+							<tr>
+								<td colspan="6">Đơn vị: <span id="issue-department"></span></td>
+								<td colspan="6">Số điện thoại: <span id="issue-phone-number"></span></td>
+							</tr>
+							<tr>
+								<td colspan="12">Địa chỉ: <span id="issue-address"></span></td>
+							</tr>
+							<tr>
+								<td colspan="12">Nội dung: <span id="issue-content"></span></td>
+							</tr>
+							<tr>
+								<th colspan="12">Chi tiết linh kiện</th>
+							</tr>
+							<tr id="tr-issue-detail">
+								<th colspan="4" class="text-center">Loại part</th>
+								<th colspan="4" class="text-center">Tên part</th>
+								<th colspan="4" class="text-center">Số lượng</th>
+							</tr>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" onclick="closeModal()">Đóng</button>
+						<button id="btn-confirm" type="button" class="btn btn-success" hidden="hidden">Nhận hàng</button>
+					</div>
+					
+			</div>
+		</div>
+	</div>
+<!-- 	Modal xem chi tiết   -->
+<!-- 	Modal xem chi tiết   -->
+	<div th:id="'modal-view-receipt'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Phiếu nhập hàng</span>
+				</div>
+					<div class="modal-body">
+						<input type="hidden" id="receipt-trackingId" />
+						 <table class="table table-bordered table-hover">
+						 	<tr>
+								<th colspan="12">Thông tin phiếu</th>
+							</tr>
+							<tr>
+								<td colspan="8">Người nhận: <span id="receipt-receiver"></span></td>
+								<td colspan="4">Ngày nhận: <span id="receipt-received-date"></span></td>
+							</tr>
+<!-- 							<tr> -->
+<!-- 								<td colspan="6">Đơn vị: <span id="issue-department"></span></td> -->
+<!-- 								<td colspan="6">Số điện thoại: <span id="issue-phone-number"></span></td> -->
+<!-- 							</tr> -->
+<!-- 							<tr> -->
+<!-- 								<td colspan="12">Địa chỉ: <span id="issue-address"></span></td> -->
+<!-- 							</tr> -->
+<!-- 							<tr> -->
+<!-- 								<td colspan="12">Nội dung: <span id="issue-content"></span></td> -->
+<!-- 							</tr> -->
+							<tr>
+								<th colspan="12">Chi tiết linh kiện</th>
+							</tr>
+							<tr id="tr-receipt-detail">
+								<th colspan="4" class="text-center">Loại part</th>
+								<th colspan="4" class="text-center">Tên part</th>
+								<th colspan="4" class="text-center">Số lượng</th>
+							</tr>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" onclick="closeModal()">Đóng</button>
+<!-- 						<button id="btn-confirm" type="button" class="btn btn-success" hidden="hidden">Nhận hàng</button> -->
+					</div>
+					
+			</div>
+		</div>
+	</div>
+<!-- 	Modal xem chi tiết   -->
+	<div th:include="/commons/admin :: footer"></div>
+	<div th:include="/commons/admin :: js"></div>
+	<div th:include="/commons/pagination :: js"></div>
+	<script th:src="@{/assets/js/inventory/history.js}"></script>
+</body>
+
+</html>

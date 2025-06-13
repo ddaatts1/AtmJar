@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<title>Báo cáo tổng lượng services theo cán bộ</title>
+	<style>
+		th {
+			text-align: center;
+		}
+		.card-body{
+			min-height: 100vh !important;
+		}
+		
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		tr>th, tr>td{
+			vertical-align: inherit !important;
+		}
+		.btn-export{
+			float: right;
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+		.btn-view{
+			cursor: pointer;
+		}
+		.btn-view:hover{
+			color: blue !important;
+		}
+		.center {
+		    display: flex;
+		    flex-direction: row;
+		    align-content: center;
+		    align-items: center;
+		    flex-wrap: nowrap;
+		    justify-content: flex-start;
+		    padding-top: 14px;
+		}
+	</style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Báo cáo tổng lượng theo cán bộ')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='statistical', item='amount-person')"></div>
+		
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<div class="portlet light bordered">
+						<div class="portlet-body">
+							<form id="person-statistical">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian bắt đầu</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="startTime" name="startTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+							                </div>
+						                </div>
+									</div>
+									
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Thời gian kết thúc</label>
+											<div class="input-group">
+							                    <div class="input-group-prepend">
+							                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+							                    </div>
+							                    <input type="text" placeholder="Nhập ngày" id="endTime" name="endTime" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+							                </div>
+						                </div>
+									</div>
+									<div class="col-md-4 center">
+										<button type="button" id="btn-submit-form" class="btn btn-primary">Tìm kiếm</button>
+										<button id="btn-export" disabled="true" class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất báo cáo</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div id="searchResult"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<!-- Modal service detail -->
+<th:block>
+	<div th:id="'modal_services'" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #63b175">
+					<span class="font-weight-bold modal-title"
+						style="color: white; font-size: 20px">Danh sách service của cán bộ</span>
+				</div>
+				<div class="modal-body">
+					<div class="modal_content">
+						<table class="table table-bordered table-hover" id="tblATM" style="width: 100%">
+							<thead>
+								<tr>
+									<td class="text-center">STT</td>
+									<td class="text-center">Thời&nbspgian</td>
+									<td class="text-center">Serial Number</td>
+									<td class="text-center">Địa chỉ</td>
+									<td class="text-center">Bảo trì</td>
+									<td class="text-center">Trạng thái</td>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+<!-- Modal service detail -->
+
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/statistical/person-statistical-amount.js}"></script>
+</body>
+</html>

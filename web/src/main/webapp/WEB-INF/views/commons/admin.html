@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang quản trị</title>
+
+	<th:block th:fragment="css">
+	  <link rel="shortcut icon" th:href="@{/assets/img/logo.ico}" type="image/x-icon">
+	  <!-- Google Font: Source Sans Pro -->
+	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	  <!-- Font Awesome -->
+	  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+	  <!-- Ionicons -->
+	  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	  <!-- iCheck -->
+	  <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+	  <!-- JQVMap -->
+	  <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+	  <!-- Theme style -->
+	  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+	  <!-- overlayScrollbars -->
+	  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+		<!-- Select2 -->
+		<link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+		<link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+		<!-- Bootstrap4 Duallistbox -->
+		<link rel="stylesheet" th:href="@{/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
+		
+		<link rel="stylesheet" th:href="@{/plugins/sweetalert2/sweetalert2.min.css}">
+		<link rel="stylesheet" th:href="@{/plugins/toastr/toastr.min.css}">
+		<link rel="stylesheet" th:href="@{/plugins/datatables/jquery.dataTables.min.css}">
+		<style>
+			.btn em{
+				color: #fff;
+			}
+			.btn{
+				margin: 0 5px;
+			}
+			tr>th, tr>td{
+				vertical-align: middle !important;
+			}
+			.error{
+				color: red;
+			}
+			.btn.moveall, .btn.removeall{
+				margin: 0px;
+			}
+			
+			.bootstrap-duallistbox-container option{
+			    cursor: pointer;
+			    padding: 5px;
+			    border-bottom: 1px solid #999;
+			}
+			.bootstrap-duallistbox-container option:hover{
+			    background-color: #999;
+			}
+			/* .dataTables_empty{
+				text-align: center;
+			} */
+			.btn {
+			    margin: 5px 5px;
+			    min-width: 45px;
+			}
+			.nav-link em{
+				font-size: 25px;
+				width: 40px;
+    			padding-right: 15px;
+			}
+			.info{
+				width: 170px;
+				word-wrap: break-word;
+			}
+			.menu-open{
+				width: 100%;
+			}
+			.img-circle {
+			    width: 40px;
+			}
+			.pull-right .dropdown-toggle::after{
+				display: inline-block;
+			    margin-left: .255em;
+			    vertical-align: .255em;
+			    content: "";
+			    border-top: none;
+			    border-right: none;
+			    border-bottom: none;
+			    border-left: none;
+			}
+			.pull-right span.username{
+				color: rgba(0,0,0,.5);
+			    font-weight: 600;
+			    padding: 0 10px;
+			}
+			.pull-right li:hover{
+				background: rgba(0,0,0,.1);
+				border-radius: 5px;
+			}
+			.fas{
+				cursor: pointer;
+			}
+		</style>
+	</th:block>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+<th:block th:fragment="navbar">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><em class="fas fa-bars"></em></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <h2 class="font-weight-bold" style="margin-bottom: 0; font-family: serif;">[[${title}]]</h2>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto pull-right">
+      <li class="dropdown dropdown-user">
+			<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+			
+			<img th:src="@{/assets/img/logodefault.png}" class="img-circle elevation-2" alt="User Image">
+			<span class="username username-hide-on-mobile">
+			 [[${uInfo.username}]] </span>
+			<i class="fa fa-angle-down"></i>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-default">
+				<li>
+					<a class="dropdown-item" th:href="@{/change-pwd(username=${uInfo.username})}"><i class="icon-key"></i> Đổi mật khẩu </a>
+				</li>
+				<li>
+					<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="icon-key"></i> Đăng xuất </a>
+	              	<form id="logout-form" th:action="@{/logout}" method="POST">
+	                	<input type="hidden" name="_token" value="k9GtAtIxgE8aIycIBHMIapXeDkRZLJsH7IhyJA8u">			              	</form>
+				</li>
+
+			</ul>
+		</li>
+    </ul>
+    <!-- Right navbar links -->
+   
+  </nav>
+  <!-- /.navbar -->
+</th:block>
+
+<th:block th:fragment="sidebar">
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar elevation-4 sidebar-light-primary">
+  	<a th:href="@{/home}" class="brand-link navbar-lightblue" style="width: 100%;height: 57px;">
+      <img th:src="@{/assets/img/mitec.png}" class="brand-image" style="opacity: .8">
+      <!-- <span class="brand-text font-weight-light">AdminLTE 3</span> -->
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar Menu -->
+      <nav class="mt-2" aria-label="User" style="min-height: 900px">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="height: 100%">
+		  <li class="nav-item">
+      		<th:block th:if="${item == 'home'}">
+            	<a th:href="@{/home}" class="nav-link active">
+            </th:block>
+            <th:block th:unless="${item == 'home'}">
+            	<a th:href="@{/home}" class="nav-link">
+            </th:block>
+              <em class="fas fa-home"></em>
+              <span>Bảng điều khiển</span>
+         	</a>
+          </li>
+		  <th:block sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ADMINISTRATIVE', 'ROLE_MONITOR')">
+	          <li class="nav-item">
+	      		<th:block th:if="${item == 'jobs'}">
+	            	<a th:href="@{/jobs?status=2}" class="nav-link active">
+		              	<em class="fas fa-tasks"></em>
+		              	<span>Quản lý Service</span>
+		         	</a>
+	            </th:block>
+	            <th:block th:unless="${item == 'jobs'}">
+	            	<a th:href="@{/jobs?status=2}" class="nav-link">
+		              	<em class="fas fa-tasks"></em>
+		              	<span>Quản lý Service</span>
+		         	</a>
+	            </th:block>
+	          </li>
+	          <li class="nav-item">
+	      		<th:block th:if="${item == 'search'}">
+	            	<a th:href="@{/search}" class="nav-link active">
+		              <em class="fas fa-search"></em>
+		              <span>Tra cứu</span>
+		         	</a>
+	            </th:block>
+	            <th:block th:unless="${item == 'search'}">
+	            	<a th:href="@{/search}" class="nav-link">
+		              <em class="fas fa-search"></em>
+		              <span>Tra cứu</span>
+		         	</a>
+	            </th:block>
+	          </li>
+          </th:block>
+          <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMINISTRATIVE', 'ROLE_MONITOR')">
+            <th:block th:if="${item == 'contracts'}">
+            	<a th:href="@{/contracts}" class="nav-link active">
+	              <em class="fas fa-users"></em>
+	              <span>Quản lý hợp đồng</span>
+	            </a>
+            </th:block>
+            <th:block th:unless="${item == 'contracts'}">
+            	<a th:href="@{/contracts}" class="nav-link">
+	              <em class="fas fa-users"></em>
+	              <span>Quản lý hợp đồng</span>
+	            </a>
+            </th:block>
+          </li>
+          <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+            <th:block th:if="${item == 'user'}">
+            	<a th:href="@{/users}" class="nav-link active">
+	              <em class="fas fa-users"></em>
+	              <span>Quản lý người dùng</span>
+	            </a>
+            </th:block>
+            <th:block th:unless="${item == 'user'}">
+            	<a th:href="@{/users}" class="nav-link">
+	              <em class="fas fa-users"></em>
+	              <span>Quản lý người dùng</span>
+	            </a>
+            </th:block>
+          </li>
+          <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+	          <th:block th:if="${parent == 'category'}">
+	        	<li class="nav-item menu-open">
+	       	  </th:block>
+	          <th:block th:unless="${parent == 'category'}">
+	        	<li class="nav-item">
+	          </th:block>
+	        	<a class="nav-link" style="cursor: pointer;">
+	              <em class="fas fa-list-alt"></em>
+	              <span>Quản lý danh mục</span>
+	         	</a>
+	              <ul class="nav nav-treeview">
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'banks'}">
+			            	<a th:href="@{/banks}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'banks'}">
+			            	<a th:href="@{/banks}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Ngân hàng</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'regions'}">
+			            	<a th:href="@{/regions}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'regions'}">
+			            	<a th:href="@{/regions}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Vùng miền</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'departments'}">
+			            	<a th:href="@{/departments}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'departments'}">
+			            	<a th:href="@{/departments}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Đơn vị chuyên trách</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'contracts'}">
+			            	<a th:href="@{/contracts}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'contracts'}">
+			            	<a th:href="@{/contracts}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Hợp đồng</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'atms'}">
+			            	<a th:href="@{/atms}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'atms'}">
+			            	<a th:href="@{/atms}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>ATM</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'series'}">
+			            	<a th:href="@{/series}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'series'}">
+			            	<a th:href="@{/series}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Dòng máy</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'error-devices'}">
+			            	<a th:href="@{/error-devices}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'error-devices'}">
+			            	<a th:href="@{/error-devices}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Thiết bị lỗi</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'accessories'}">
+			            	<a th:href="@{/accessories}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'accessories'}">
+			            	<a th:href="@{/accessories}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Linh kiện thay thế</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'devices'}">
+			            	<a th:href="@{/devices}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'devices'}">
+			            	<a th:href="@{/devices}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Thiết bị</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'errors'}">
+			            	<a th:href="@{/commonErrors}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'errors'}">
+			            	<a th:href="@{/commonErrors}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Lỗi thường gặp</span>
+		              	</a>
+	              	</li>
+	              	<li class="nav-item">
+	              		<th:block th:if="${item == 'job-perform'}">
+			            	<a th:href="@{/job-perform}" class="nav-link active">
+			            </th:block>
+			            <th:block th:unless="${item == 'job-perform'}">
+			            	<a th:href="@{/job-perform}" class="nav-link">
+			            </th:block>
+		              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              		<span>Công việc thực hiện</span>
+		              	</a>
+	              	</li>
+	              </ul>
+	          </li>
+          </th:block>
+		  <!--  Quản lý kho  -->
+          <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+      		<th:block th:if="${item == 'inventories'}">
+            	<a th:href="@{/inventories}" class="nav-link active">
+	              <em class="fas fa-warehouse"></em>
+	              <span>ADMIN - Quản lý kho</span>
+	         	</a>
+            </th:block>
+            <th:block th:unless="${item == 'inventories'}">
+            	<a th:href="@{/inventories}" class="nav-link">
+	              <em class="fas fa-warehouse"></em>
+	              <span>ADMIN - Quản lý kho</span>
+	         	</a>
+            </th:block>
+          </li>
+		  <th:block th:if="${uInventories != null && not #lists.isEmpty(uInventories)}">
+		  	<th:block th:if="${parent == 'inventories'}">
+	        	<li class="nav-item menu-open">
+	       	</th:block>
+	        <th:block th:unless="${parent == 'inventories'}">
+	        	<li class="nav-item">
+	        </th:block>
+		  		<a href="#" class="nav-link">
+		  			<em class="fas fa-warehouse"></em>
+	            	<span>Quản lý kho</span>
+		  		</a>
+		  		<ul class="nav nav-treeview">
+              	  	<li class="nav-item">
+              	  		<th:block th:each="inventory : ${uInventories}">
+				      		<th:block th:if="${item} == ${inventory.id}">
+				            	<a th:href="@{/inventory?id=} + ${inventory.id}" class="nav-link active">
+			              			<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              			<span>[[${inventory.name}]]</span>
+			              		</a>
+				            </th:block>
+				            <th:block th:unless="${item} == ${inventory.id}">
+				            	<a th:href="@{/inventory?id=} + ${inventory.id}" class="nav-link">
+			              			<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              			<span>[[${inventory.name}]]</span>
+			              		</a>
+				            </th:block>
+	              		</th:block>
+              		</li>
+            	</ul>
+		  	</li>
+		  </th:block>
+		  <!--  Quản lý kho  -->
+          <th:block sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ADMINISTRATIVE', 'ROLE_MONITOR')">
+	          <th:block th:if="${parent == 'statistical'}">
+	        	<li class="nav-item menu-open">
+	       	  </th:block>
+	          <th:block th:unless="${parent == 'statistical'}">
+	        	<li class="nav-item">
+	          </th:block>
+	        	<a href="#" class="nav-link">
+	              <em class="fas fa-chart-bar"></em>
+	              <span>Thống kê báo cáo</span>
+	         	</a>
+	         	<ul class="nav nav-treeview">
+              	  	<li class="nav-item">
+			      		<th:block th:if="${item == 'amount-contractRegion'}">
+			            	<a th:href="@{/statistical-amountRegion}" class="nav-link active">
+				            	<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              			<span>Thống kê số lượng máy</span>
+		              		</a>
+			            </th:block>
+			            <th:block th:unless="${item == 'amount-contractRegion'}">
+			            	<a th:href="@{/statistical-amountRegion}" class="nav-link">
+				            	<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              			<span>Thống kê số lượng máy</span>
+		              		</a>
+			            </th:block>
+	              	</li>
+	              	<li class="nav-item">
+			      		<th:block th:if="${item == 'amount-person'}">
+			            	<a th:href="@{/statistical-amount-per-person}" class="nav-link active">
+		              			<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              			<span>Thống kê theo cán bộ</span>
+		              		</a>
+			            </th:block>
+			            <th:block th:unless="${item == 'amount-person'}">
+			            	<a th:href="@{/statistical-amount-per-person}" class="nav-link">
+		              			<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+		              			<span>Thống kê theo cán bộ</span>
+		              		</a>
+			            </th:block>
+	              	</li>
+	              	<li class="nav-item">
+			      		<th:block th:if="${item == 'statistical'}">
+			            	<a th:href="@{/statistical}" class="nav-link active">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê theo chu kỳ</span>
+		              		</a>
+			            </th:block>
+			            <th:block th:unless="${item == 'statistical'}">
+			            	<a th:href="@{/statistical}" class="nav-link">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê theo chu kỳ</span>
+		              		</a>
+			            </th:block>
+	              	</li>
+	              	<li class="nav-item">
+			      		<th:block th:if="${item == 'statistical-accessories'}">
+			            	<a th:href="@{/statistical-accessories}" class="nav-link active">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê linh kiện</span>
+		              		</a>
+			            </th:block>
+			            <th:block th:unless="${item == 'statistical-accessories'}">
+			            	<a th:href="@{/statistical-accessories}" class="nav-link">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê linh kiện</span>
+		              		</a>
+			            </th:block>
+	              	</li>
+	              	<li class="nav-item">
+			      		<th:block th:if="${item == 'statistical-services'}">
+			            	<a th:href="@{/statistical-services}" class="nav-link active">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê services</span>
+		              		</a>
+			            </th:block>
+			            <th:block th:unless="${item == 'statistical-services'}">
+			            	<a th:href="@{/statistical-services}" class="nav-link">
+			              		<em class="fas fa-chevron-right" style="padding-left: 15px; padding-right: 10px;"></em>
+			              		<span>Thống kê services</span>
+		              		</a>
+			            </th:block>
+	              	</li>
+	            </ul>
+	          </li>
+		  </th:block>
+          <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+          	<li class="nav-item">
+	      		<th:block th:if="${item == 'system-config'}">
+	            	<a th:href="@{/system-configuration}" class="nav-link active">
+		              <em class="fas fa-cog"></em>
+		              <span>Cấu hình hệ thống</span>
+		         	</a>
+	            </th:block>
+	            <th:block th:unless="${item == 'system-config'}">
+	            	<a th:href="@{/system-configuration}" class="nav-link">
+		              <em class="fas fa-cog"></em>
+		              <span>Cấu hình hệ thống</span>
+		         	</a>
+	            </th:block>
+          	</li>
+          </th:block>
+         <!--  <li class="nav-item">
+            <a th:href="@{/logout}" class="nav-link">
+              <em class="fas fa-sign-out-alt"></em>
+              <span>Đăng xuất</span>
+         	</a>
+          </li> -->
+          
+        </ul>
+      </nav>
+     
+      <!-- /.sidebar-menu -->
+    </div>
+  </aside>
+</th:block>
+</div>
+  <!-- /.content-wrapper -->
+  <th:block th:fragment="footer">
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2021 <a href="#">MITEC</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0.0
+    </div>
+  </footer>
+  </th:block>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+
+<!-- ./wrapper -->
+
+<th:block th:fragment="js">
+	<!-- jQuery -->
+	<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+	<script>
+	  $.widget.bridge('uibutton', $.ui.button)
+	</script>
+	<!-- Bootstrap 4 -->
+	<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<!-- daterangepicker -->
+	<script th:src="@{/plugins/moment/moment.min.js}"></script>
+	<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+	<!-- overlayScrollbars -->
+	<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+	<!-- AdminLTE App -->
+	<script th:src="@{/dist/js/adminlte.js}"></script>
+	<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+	<!-- Bootstrap4 Duallistbox -->
+	<script th:src="@{/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js}"></script>
+	
+	<script th:src="@{/plugins/jquery-validation/jquery.validate.min.js}"></script>
+	<script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/plugins/sweetalert2/sweetalert2.min.js}"></script>
+	<script th:src="@{/plugins/toastr/toastr.min.js}"></script>
+	<script th:src="@{/plugins/inputmask/jquery.inputmask.min.js}"></script>
+	<script>
+		$('.duallistbox').bootstrapDualListbox()
+		//$('.select2').select2()
+	</script>
+	<script>
+		function getContextPath() {
+			return  window.location.protocol + "//" + window.location.host;
+		};
+		$('[data-mask]').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+	</script>
+</th:block>
+</body>
+</html>

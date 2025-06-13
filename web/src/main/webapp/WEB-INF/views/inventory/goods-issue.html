@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>Phiếu xuất kho</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<style type="text/css">
+.portlet.light.bordered {
+	border: 1px solid #e1e1e1 !important;
+}
+
+.portlet.light {
+	padding: 12px 20px 15px 20px;
+	background-color: #fff;
+}
+.center {
+	display: flex;
+	flex-direction: row;
+	align-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	padding-top: 14px;
+}
+em.fas.fas.fa-file-excel.btn-import {
+    padding: 5px;
+}
+a#btn-export {
+    margin-right: 0px;
+}
+.modal-footer {
+    padding-right: 0px !important;
+}
+</style>
+<link rel="stylesheet" th:href="@{/assets/css/inventory/goods-issue.css}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div id="loader" style="display: none;"></div>
+	<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Phiếu xuất kho')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='inventories', item=${inventoryId})"></div>
+
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<form id="goods-issue-form" method="POST">
+						<input type="hidden" id="inventoryId" name="inventoryId" th:value="${inventoryId}"/>
+						<span style="font-weight: bold">Thông tin người nhận</span>
+						<hr/>
+						<input type="hidden" id="arr" name="arr"/>
+						<div class="row">
+							<label for="part" class="col-sm-1 col-form-label">Gửi đến kho:</label>
+							<div class="col-sm-5 form-group">
+								<select class="form-control" id="received_inventory" name="received_inventory">
+									<option value="">----- Chọn kho -----</option>
+									<option th:each="item : ${inventories}" th:value="${item.id}">[[${item.name}]]</option>
+								</select>
+							</div>
+							<label for="sender_inventory" class="col-sm-1 col-form-label">Nguời nhận:*</label>
+							<div class="col-sm-5 form-group">
+								<input type="text" class="form-control" placeholder="Nhập tên người nhận" id="receiver" name="receiver" required="required"/>
+								<div id="suggesstion-box"></div>
+							</div>
+							<label for="sender_inventory" class="col-sm-1 col-form-label">Sđt: *</label>
+							<div class="col-sm-5 form-group">
+								<input type="text" class="form-control" placeholder="Nhập sđt người nhận" id="phone_number" name="phone_number" required="required"/>
+							</div>
+							<label for="sender_inventory" class="col-sm-1 col-form-label">Đơn vị:</label>
+							<div class="col-sm-5 form-group">
+								<input type="text" class="form-control" placeholder="Nhập đơn vị người nhận" id="received_department" name="received_department"/>
+							</div>
+						</div>
+						<div class="row">
+							<label for="sender_inventory" class="col-sm-1 col-form-label">Địa chỉ: *</label>
+							<div class="col-sm-11 form-group">
+								<input type="text" class="form-control" placeholder="Nhập địa chỉ người nhận" id="received_address" name="received_address" required="required"/>
+							</div>
+						</div>
+						<div class="row">
+							<label for="sender_inventory" class="col-sm-1 col-form-label">Nội dung:</label>
+							<div class="col-sm-11 form-group">
+								<textarea rows="3" class="form-control" placeholder="Nội dung" id="note" name="note"></textarea>
+							</div>
+						</div>
+						<hr/>
+						<span style="font-weight: bold">Danh sách part gửi đi</span>
+						<hr/>
+						<div class="row">
+							<label for="part" class="col-sm-1 col-form-label">Loại part:</label>
+							<div class="col-sm-3 form-group">
+								<select class="form-control" id="part_type" name="part_type">
+									<option value="1">Thiết bị</option>
+									<option value="2">Linh kiện</option>
+								</select>
+							</div>
+							<label for="part" class="col-sm-1 col-form-label">Part: *</label>
+							<div class="col-sm-3 form-group">
+								<select class="form-control" id="parts" name="parts">
+									<option value="">------- Chọn part -------</option>
+								</select>
+							</div>
+							<div class="col-sm-2 form-group">
+								<input type="number" min="1" placeholder="Số lượng" class="form-control" id="quantity" name="quantity"/>
+							</div>
+							<div class="col-sm-2 form-group">
+								<button type="button" id="btn-add-part" class="btn-primary form-control">Thêm part</button>
+							</div>
+						</div>
+						<hr/>
+						<div class="col-md-12">
+							<table class="table table-bordered table-hover" id="tblTrackingDetails">
+								<thead>
+									<th class="text-center">STT</th>
+									<th class="text-center">Tên part</th>
+									<th class="text-center">Loại part</th>
+									<th class="text-center">Số lượng</th>
+									<th class="text-center">Hành động</th>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+						
+						<div class="float-right">
+		                	<a th:href="@{/inventory?id=} + ${inventoryId}" type="button" class="btn btn-default">Quay lại</a>
+		                  	<button id="btn-submit" type="submit" class="btn btn-primary"><em class="fas fa-check"></em>&nbsp;Tạo phiếu</button>
+		                </div>
+	               </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="/commons/admin :: footer"></div>
+	<div th:include="/commons/admin :: js"></div>
+	<script th:src="@{/assets/js/inventory/goods-issue.js}"></script>
+</body>
+
+</html>

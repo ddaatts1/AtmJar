@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title></title>
+	<style type="text/css">
+		p {
+			color: black;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		table {
+			border-collapse: collapse;
+			color: black;
+			font-family: 'Times New Roman', Times, serif;
+		}
+		table, th, td {
+			border: 1px solid black;
+		}
+		th, td {
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-top: 2px;
+			padding-bottom: 2px;
+		}
+		.th-item {
+			font-style: italic;
+		}
+	</style>
+</head>
+<body>
+	<p>Kính gửi quý khách hàng,</p>
+	<p>Chúng tôi đã bố trí cán bộ phối hợp với Quý Khách hàng thực hiện một số nội dung chi tiết như sau:</p>
+	<table>
+		<tr>
+     		<td colspan="12">Cán bộ thực hiện: <span>[[${job.user.fullName + " / Sđt: " + job.user.phoneNumber}]]</span></td>
+     	</tr>
+		<tr>
+			<td colspan="6">Serial No: <span>[[${job.atm.serialNumber}]]</span></td>
+			<td colspan="6">Thời gian bắt đầu: <span>[[${checkInTime}]]</span></td>
+		</tr>
+		<tr>
+			<td colspan="6">Vị trí đặt máy: <span>[[${job.atm.address}]]</span></td>
+			<td colspan="6">Thời gian kết thúc: <span>[[${completeTime}]]</span></td>
+		</tr>
+		<tr>
+			<td colspan="12">Công việc thực hiện: <span>[[${workDetail}]]</span></td>
+		</tr>
+		<tr>
+			<th colspan="12" style="text-align: left">I. Sự cố và giải pháp khắc phục</th>
+		</tr>
+
+		<tr>
+			<th class="th-item">STT</th>
+			<th class="th-item" colspan="1">Thiết bị</th>
+			<th class="th-item" colspan="4">Sự cố</th>
+			<th class="th-item" colspan="4">Giải pháp khắc phục</th>
+		</tr>
+		<tr th:each="kpsc, iter : ${kpscs}">
+			<td style="text-align: center;">[[${iter.count}]]</td>
+			<td colspan="1">[[${kpsc.device.name}]]</td>
+			<td colspan="4">[[${kpsc.errorDesc}]]</td>
+			<td colspan="4">[[${kpsc.jobPerform.name}]]</td>
+		</tr>
+		<tr>
+			<th colspan="12" style="text-align: left">II. Thiết bị thay thế</th>
+		</tr>
+		<tr>
+			<th class="th-item">STT</th>
+			<th class="th-item" colspan="1">Thiết bị</th>
+			<th class="th-item" colspan="4">Mô tả</th>
+			<th class="th-item" colspan="4">Serial No.</th>
+		</tr>
+		<tr th:each="item, iter : ${replacementAccessories}">
+			<td style="text-align: center;">[[${iter.count}]]</td>
+			<td colspan="1">[[${item.errorDevice.name}]]</td>
+			<td colspan="4">[[${"Thay " + item.quantity + " " + item.accessory.name}]]</td>
+			<td colspan="4"></td>
+		</tr>
+		<th:block th:if="${job.note != null}">
+			<tr>
+				<td colspan="12">Ghi chú: <span>[[${job.note}]]</span></td>
+			</tr>
+		</th:block>
+		<th:block th:unless="${job.note != null}">
+			<tr>
+				<td colspan="12">Ghi chú: </td>
+			</tr>
+		</th:block>
+	</table>
+	<p>Trân trọng,</p>
+	<p>Công ty Cổ Phần Ứng dụng Khoa học và Công nghệ - MITEC</p>
+	<p>website: www.mitec.com.vn</p>
+	<p>Hotline: (84-24) 3726 1874</p>
+</body>
+</html>

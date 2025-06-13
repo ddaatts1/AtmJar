@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Quản lý người dùng</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<th:block th:unless="${user.id != null}">
+			<div th:include="/commons/admin :: navbar(title='Tạo mới người dùng')"></div>
+		</th:block>
+		<th:block th:if="${user.id != null}">
+			<div th:include="/commons/admin :: navbar(title='Thông tin người dùng')"></div>
+		</th:block>
+		<div th:include="/commons/admin :: sidebar(parent='', item='user')"></div>
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-body">
+					<form id="userForm" name="userForm" th:action="@{/user/save}" method="post" th:object="${user}">
+					<input type="hidden" th:field="*{id}">
+					<input type="hidden" th:field="*{deviceId}">
+					<input type="hidden" th:field="*{actived}">
+					<div class="card-body">
+	                    <th:block th:if="${user.id != null}">
+		                    <div class="row">
+		                    	<div class="form-group col-md-6">
+		                    		<label>Tên đăng nhập *</label>
+				                    <input type="text" class="form-control" th:value="${user.username}" disabled="disabled">
+				                    <input type="hidden" th:field="*{username}">
+				                    <input type="hidden" th:field="*{password}">
+			                    </div>
+		                  		<div class="form-group col-md-6">
+				                    <label>Họ tên cán bộ</label>
+				                    <input type="text" class="form-control" th:field="*{fullName}">
+			                  	</div>
+		                    </div>
+		            	</th:block>
+		            	<th:block th:unless="${user.id != null}">
+	            			<div class="form-group">
+	                    		<label>Tên đăng nhập *</label>
+		            			<input type="text" id="username" class="form-control" th:field="*{username}">
+		            		</div>
+		            		<div class="row">
+		            			<div class="form-group col-md-6">
+				                    <label>Họ tên cán bộ</label>
+				                    <input type="text" id="fullName" class="form-control" th:field="*{fullName}">
+			                  	</div>
+			            		<div class="form-group col-md-6">
+				                    <label>Mật khẩu *</label>
+				                    <input type="password" id="password" class="form-control" th:field="*{password}">
+			                  	</div>
+		            		</div>
+		            	</th:block>
+	            		<div class="row">
+		                  	<div class="form-group col-md-6">
+			                    <label>Địa chỉ email *</label>
+			                    <input type="email" class="form-control" th:field="*{email}" placeholder="example@gmail.com">
+		                  	</div>
+	                  		<div class="form-group col-md-6">
+			                    <label>Số điện thoại</label>
+			                    <input type="text" class="form-control" th:field="*{phoneNumber}">
+		                  	</div>
+	                  	</div>
+	                  	<div class="row">
+	                  		<div class="form-group col-md-6">
+			                    <label>Đơn vị công tác</label>
+			                    <select class="form-control" th:field="*{department}">
+      								<option value="" th:disabled th:hidden>-------Chọn đơn vị-------</option>
+			                    	<th:block th:if="${user.department != null}">
+				                    	<option th:each="department : ${departments}" th:value="${department.id}"
+				                    		th:selected="${department.id eq user.department.id ? true : false}"
+				                    	>
+				                    		[[${department.name}]]
+				                    	</option>
+			                    	</th:block>
+			                    	<th:block th:unless="${user.department != null}">
+				                    	<option th:each="department : ${departments}" th:value="${department.id}">
+				                    		[[${department.name}]]
+				                    	</option>
+			                    	</th:block>
+			                    </select>
+		                  	</div>
+		                  	<div class="form-group col-md-6">
+			                    <label>Thiết bị di động</label>
+			                    <input type="text" class="form-control" th:value="${user.deviceId}" disabled>
+		                  	</div>
+	                  	</div>
+						<div class="form-group">
+							<label>Danh sách quyền *</label>
+							<select class="duallistbox" multiple="multiple" th:field="*{roleIds}" id="listItem">
+			                    <option th:each="role : ${roles}" th:value="${role.id}">[[${role.desc}]]</option>
+			                </select>
+			                <span class="error" id="listItemErr"></span>
+						</div>
+					</div>
+	                <div class="float-right">
+	                	<a th:href="@{/users}" type="button" class="btn btn-default">Quay lại</a>
+	                  	<button id="btn-submit" type="button" class="btn btn-primary">Lưu</button>
+	                </div>
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<script th:src="@{/assets/js/user-form.js}"></script>
+</body>
+</html>

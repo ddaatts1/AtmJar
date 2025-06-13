@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+</head>
+<body>
+<!-- message -->
+<div th:fragment="message">
+	<div id="message" th:if="${messages != null && !messages.isEmpty()}">
+    	<div class="alert bg-success text-white alert-styled-left alert-dismissible">
+			<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+			<span th:text="${messages}" ></span>
+		</div>
+    </div>
+
+	<div id="error" th:if="${errors != null && !errors.isEmpty()}">
+   		<div class="alert bg-danger text-white alert-styled-left alert-dismissible">
+			<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+			<span th:text="${errors}" ></span>
+		</div>
+    </div>
+	<script type="text/javascript">
+		setTimeout(function(){ $("#message").toggle(); }, 4000);
+	    setTimeout(function(){ $("#error").toggle(); }, 4000);
+	</script>
+</div>
+<!-- /message -->
+</body>
+</html>

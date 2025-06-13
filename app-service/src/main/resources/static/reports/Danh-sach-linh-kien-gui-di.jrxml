@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Danh-sach-linh-kien-gui-di" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b40eccc8-e186-4347-84fb-bbcdbb738600">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="b3b73217-a6a0-4c2c-b581-65266e35e116">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="partName" class="java.lang.String"/>
+		<field name="quantity" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="parts" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="122" splitType="Stretch">
+			<staticText>
+				<reportElement x="30" y="31" width="269" height="51" uuid="f306952c-4bfe-4168-83ef-81291adcabd5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="VN-Arial" size="38" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MITEC Jsc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="82" width="269" height="21" uuid="65bdaede-5005-4470-9f2d-94cf752e3b95">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="VN-Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[298E Kim Mã - HÀ NỘI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="103" width="268" height="19" uuid="2c80bbf9-3bce-4f7e-b79e-aba3886678bf">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="VN-Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEL : (024) 37.261873 - 37.2681874]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="330" splitType="Stretch">
+			<componentElement>
+				<reportElement x="31" y="50" width="512" height="211" uuid="02af10af-9bdc-43e7-a0cc-6ae838fe9913">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="f9b81691-5513-4b93-a3bc-0d32937ccf22">
+						<dataSourceExpression><![CDATA[$P{parts}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="290" uuid="70485a1e-0845-408d-8692-622c8fe8e1f6">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="290" height="30" uuid="ce181c48-e7d0-4819-a396-a029e9ade3ef"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Linh kiện ]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="290" height="30" uuid="9ee5d1cd-8e1a-46c9-a05e-131b45b4f2e8">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+									<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14"/>
+									<paragraph leftIndent="10" rightIndent="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{partName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="110" uuid="28fb8c19-776e-4e0d-9a63-8fc13f64bc18">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="110" height="30" uuid="435a7983-e7f5-4cc2-a0be-50d6f8b6ad10"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Số lượng]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="110" height="30" uuid="0e97b70b-071d-4751-b866-4be1aebb6388"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="VN-Arial" size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement x="31" y="21" width="238" height="29" uuid="43c5fdfb-bb27-4a08-97e6-b4f7358adff8"/>
+				<textElement>
+					<font fontName="VN-Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Danh sách linh kiện ATM]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

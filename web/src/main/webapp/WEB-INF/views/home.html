@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Trang quản trị</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<style>
+		.portlet{
+			margin-bottom: 20px;
+		}
+		.portlet.light.bordered {
+		    border: 1px solid #e1e1e1 !important;
+		}
+		
+		.portlet.light {
+		    padding: 12px 20px 15px 20px;
+		    background-color: #fff;
+		}
+		.tbl_search_result{
+			width: 100%;
+		}
+		.form-check-input{
+			width: 20px;
+			height: 20px;
+			margin-right: 5px;
+		}
+		.form-check-label{
+			
+			padding-top: 3px !important;
+			padding-left: 6px !important;
+		}
+		.form-check{
+			padding: 5px;
+			text-align: center;
+		}
+		@media screen and (max-width: 767px){
+			.form-check{
+				text-align: left;
+			}
+		}
+		.original[--parent]{
+			background-color: orange !important;
+		}
+		.btn_show_detail:hover{
+			cursor: pointer;
+			color: green !important;
+		}
+		
+		.serial-number-detail {
+			color: #007bff !important;
+		}
+	</style>
+	
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Bảng điều khiển')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='home')"></div>
+		
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-body">
+					<form method="GET" id="search-form">
+						<div class="row">
+							<div class="col-md-3 col-sm-12">
+								<div class="form-group">
+									<select class="form-control" id="contract_id" name="contract">
+										<option value="" th:disabled th:hidden>------ Tất cả hợp đồng ------</option>
+										<option th:each="contract : ${contracts}" th:value="${contract.id}" th:selected="${contract.id eq contract_id ? 'true' : 'false'}">[[${contract.name}]]</option>
+										<option value="-1" th:selected="${contract_id eq -1 ? 'true' : 'false'}">------ Hợp đồng lẻ ------</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="form-group">
+									<input type="text" name="address" class="form-control" placeholder="Nhập địa chỉ muốn tìm" th:value="${address}" />
+								</div>
+							</div>
+							<div class="col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<div class="form-check" style="min-width: 350px;display: flex; justify-content: space-around;flex-direction: row;flex-wrap: nowrap;align-content: center;">
+					                    <div>
+					                    	<input type="checkbox" class="form-check-input col-form-label" id="no_maintenance_yet" name="no_maintenance_yet" th:checked="${no_maintenance_yet}">
+					                    	<label class="form-check-label col-form-label" for="no_maintenance_yet">Chưa bảo trì</label>
+					                    </div>
+					                    <div>
+						                    <input type="checkbox" class="form-check-input" id="not_closed_yet" name="not_closed_yet" th:checked="${not_closed_yet}">
+						                    <label class="form-check-label col-form-label" for="not_closed_yet">Chưa đóng job</label>
+					                    </div>
+					                    <div>
+						                    <input type="checkbox" class="form-check-input" id="repeat_error" name="repeat_error" th:checked="${repeat_error}">
+						                    <label class="form-check-label col-form-label" for="exampleCheck3">Lỗi lặp lại</label>
+					                    </div>
+				                  	</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<button type="submit" style="margin: 0px;" class="btn btn-primary" onclick="searchFunction()">Tìm kiếm</button>
+							</div>
+						</div>
+					<div class="clearfix"></div>
+						<div class="col-md-12 tbl_search_result" style="width: 100%; overflow-x: scroll; margin-top: 10px;">
+						<div th:include="/commons/pagination :: tblLength"></div>
+							<table class="table table-bordered table-hover" id="table_home">
+								<thead>
+									<tr>
+										<th style="text-align: center;">STT</th>
+										<th style="text-align: center;">Serial&nbspnumber</th>
+										<th style="text-align: center;">Địa chỉ</th>
+										<th style="text-align: center;">Số&nbsphợp&nbspđồng</th>
+										<th style="text-align: center;">Thời gian kết thúc chu kỳ</th>
+										<th style="text-align: center;">Trạng thái services</th>
+										<th style="text-align: center;">Tình trạng services</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, iter : ${pages.content}">
+										<td style="text-align: center;">[[${iter.count + pages.number*pages.size}]]</td>
+										<td><a title="Xem chi tiết" class="btn_show_detail serial-number-detail" data-th-attr="data-serial-number=${item.serialNumber},data-contract-name=${item.name},data-contract-id=${item.contractId}">[[${item.serialNumber}]]</a></td>
+										<td>[[${item.address}]]</td>
+										<td>[[${item.name}]]</td>
+										<td class="text-center">[[${item.soNgayKetThucCK}]]</td>
+										<td>[[${item.trangThai}]]</td>
+										<th:block>
+											<td th:if="${item.tinhTrangService != null}" style="background-color: orange; color: black;">[[${item.tinhTrangService}]]</td>
+											<td th:unless="${item.tinhTrangService != null}"></td>
+										</th:block>
+									</tr>
+								</tbody>
+							</table>
+							<div th:include="/commons/pagination :: pagination"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+<div class="modal fade" id="detail">
+   <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+       <div class="modal-header" style="background-color: #63b175">
+         <h4 class="font-weight-bold modal-title" style="color: white;">Lịch sử</h4>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <div class="modal_content">
+         	<div>
+         		<p style="font-weight: 700">Serial Number: <span style="font-weight: 500;" id="serial_number"></span></p>
+         		<p style="font-weight: 700">Hợp đồng: <span style="font-weight: 500;" id="contract_name"></span></p>
+         	</div>
+             <table class="table table-bordered table-hover">
+             	<thead>
+             		<tr>
+             			<th  class="text-center">STT</th>
+             			<th  class="text-center">Thời gian bắt đầu</th>
+             			<th  class="text-center">Thời gian kết thúc</th>
+             			<th  class="text-center">Ghi chú</th>
+             			<th  class="text-center">Bảo trì</th>
+             			<th  class="text-center">Trạng thái</th>
+             		</tr>
+             	</thead>
+             	<tbody id="tbl_details">
+             	
+             	</tbody>
+			</table>
+         </div>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+       </div>
+     </div>
+     <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+<div th:include="/commons/pagination :: js"></div>
+<script th:src="@{/assets/js/home.js}"></script>
+</body>
+</html>

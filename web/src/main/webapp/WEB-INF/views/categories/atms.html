@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>Danh sách ATM</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style type="text/css">
+		.portlet.light.bordered {
+			border: 1px solid #e1e1e1 !important;
+		}
+
+		.portlet.light {
+			padding: 12px 20px 15px 20px;
+			background-color: #fff;
+		}
+
+		.btn-export {
+			margin-bottom: 5px;
+			color: #fff !important;
+		}
+
+		#loader {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			z-index: 1;
+			width: 120px;
+			height: 120px;
+			margin: -76px 0 0 -76px;
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			-webkit-animation: spin 2s linear infinite;
+			animation: spin 2s linear infinite;
+		}
+
+		@-webkit-keyframes spin {
+			0% {
+				-webkit-transform: rotate(0deg);
+			}
+
+			100% {
+				-webkit-transform: rotate(360deg);
+			}
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		/* Add animation to "page content" */
+		.animate-bottom {
+			position: relative;
+			-webkit-animation-name: animatebottom;
+			-webkit-animation-duration: 1s;
+			animation-name: animatebottom;
+			animation-duration: 1s
+		}
+
+		@-webkit-keyframes animatebottom {
+			from {
+				bottom: -100px;
+				opacity: 0
+			}
+
+			to {
+				bottom: 0px;
+				opacity: 1
+			}
+		}
+
+		@keyframes animatebottom {
+			from {
+				bottom: -100px;
+				opacity: 0
+			}
+
+			to {
+				bottom: 0;
+				opacity: 1
+			}
+		}
+
+		@media screen and (max-width: 813px) {
+			#table_scroll {
+				overflow-x: scroll
+			}
+		}
+	</style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div id="loader" style="display: none;"></div>
+	<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar(title='Danh sách ATM')"></div>
+		<div th:include="/commons/admin :: sidebar(parent='category', item='atms')"></div>
+
+		<div class="content-wrapper">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-12" style="margin-bottom: 20px;">
+							<a class="btn btn-primary" type="button" th:href="'javascript:void(0);'" data-toggle="modal"
+								data-target="#modal_createATM">Tạo mới</a>
+							<!-- <a class="btn " style="background-color: purple; color: #fff" type="button"
+								th:href="@{/template-import-atm}">Xuất Danh sách ATM</a> -->
+							<button type="button" class="btn btn-md btn-warning btn-export"  style="background-color: #28a745; color: #fff" data-toggle="modal"
+								data-target="#modal_import_atm_data" data-backdrop="static" data-keyboard="false"> <em
+									class="icon-cloud-download2"></em> Import data </button>
+						</div>
+					</div>
+					<form th:action="@{/atms}" method="get">
+						<div class="portlet light bordered" style="margin-bottom: 25px">
+							<div class="portlet-body">
+								<div class="clearfix"></div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Serial</label>
+											<input class="form-control" type="text" id="serial_number"
+												name="serial_number" th:value="${serialNumberParam}"
+												placeholder="Nhập số serial" />
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Địa chỉ máy</label>
+											<input class="form-control" type="text" name="address_search"
+												id="address_search" th:value="${addressSearchParam}"
+												placeholder="Nhập địa chỉ máy" />
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Dòng máy</label>
+											<select class="form-control" id="series" name="series">
+												<option value="">Tất cả</option>
+												<option th:each="serie : ${series}" th:value="${serie.id}"
+													th:selected="${seriesParam eq serie.id ? 'true' : 'false'}">
+													[[${serie.name}]]</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Vùng</label>
+											<select class="form-control" id="region" name="region">
+												<option value="">Tất cả</option>
+												<option th:each="region : ${regions}" th:value="${region.id}"
+													th:selected="${regionParam eq region.id ? 'true' : 'false'}">
+													[[${region.name}]]</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Đơn vị phụ trách</label>
+											<input type="hidden" id="departmentParamAtm" th:value="${departmentParam}" >
+											<select class="form-control" id="department" name="department">
+											<option value="" th:disabled th:hidden>Tất cả</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4" style="display: flex;flex-direction: row;align-content: center;align-items: center;flex-wrap: nowrap;justify-content: space-between;padding-top: 14px;">
+										<button type="submit" onclick="searchFunction()" id="btn_search" class="btn btn-primary">Tìm kiếm</button>
+										<a href="#" id="btn-export"  class="btn btn-md btn-warning btn-export"><em class="fas fa-file-excel"></em>&nbsp&nbspXuất danh sách ATM</a>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+						<div class="col-md-12" id="table_scroll">
+							<div th:include="/commons/pagination :: tblLength"></div>
+							<table class="table table-bordered table-hover" id="tblAtms" style="min-width: 768px;">
+								<thead>
+									<tr>
+										<th style="text-align: center;">STT</th>
+										<th style="text-align: center;">Serial number</th>
+										<th style="text-align: center;">Dòng máy</th>
+										<th style="text-align: center;">Địa chỉ</th>
+										<th style="text-align: center;">Vùng</th>
+										<th style="text-align: center;">Đơn vị phụ trách</th>
+										<th style="text-align: center;">Trạng thái</th>
+										<th style="text-align: center;">Hành động</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="atm,iter : ${pages.content}">
+										<td class="text-center">[[${iter.count + pages.size*pages.number}]]</td>
+										<td><a href="javascript:void(0)" title="Xem chi tiết" class="btn_show_detail" data-th-attr="data-serial-number=${atm.serialNumber}">[[${atm.serialNumber}]]</a></td>
+										<td>[[${atm.series.name}]]</td>
+										<td>[[${atm.address}]]</td>
+										<th:block>
+											<td th:if="${atm.region != null}">[[${atm.region.name}]]</td>	
+											<td th:unless="${atm.region != null}"></td>										
+										</th:block>
+										<th:block>
+											<td th:if="${atm.department != null}">[[${atm.department.name}]]</td>	
+											<td th:unless="${atm.department != null}"></td>										
+										</th:block>
+										<td class="text-center">[[${atm.statusDesc}]]</td>
+										<td class="text-center">
+											<a class="btn-edit" th:data-id="${atm.serialNumber}" title="Sửa thông tin"><em class="fas fa-edit" style="color: blue"></em></a>
+											<a class="btn-change-status" th:data-id="${atm.serialNumber}" th:data-status="${atm.status}" title="Đổi trạng thái"><em class="fas fa-sync-alt"
+													style="color: limegreen"></em></a>
+											<a class="btn-delete" th:data-id="${atm.serialNumber}" title="Xóa bản ghi"><em
+													class="fas fa-trash-alt" style="color: red"></em></a>
+										</td>
+									</tr>
+									<tr th:if="${pages.totalElements eq 0}">
+										<td colspan="8" class="text-center">Không có dữ liệu</td>
+									</tr>
+								</tbody>
+							</table>
+							<div th:include="/commons/pagination :: pagination" style="min-width: 768px;"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal tạo mới -->
+	<th:block>
+		<div th:id="'modal_createATM'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Tạo mới
+							ATM</span>
+					</div>
+					<form id="formCreateAtm" method="POST">
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Serial Number:</label>
+								<input type="text" class="col-md-12 form-control" id="serial_number_create"
+									name="serial_number_create" placeholder="Serial number">
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Địa chỉ:</label>
+								<input type="text" class="col-md-12 form-control" id="address_create"
+									name="address_create" placeholder="Địa chỉ">
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Dòng máy:</label>
+								<select class="form-control select2 col-md-12" name="series_create" id="series_create">
+									<option value="">Chọn dòng máy</option>
+									<option th:each="serie : ${series}" th:value="${serie.id}">[[${serie.name}]]
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Vùng:</label>
+								<select class="form-control select2 col-md-12" name="region_create" id="region_create">
+									<option value="">Chọn vùng</option>
+									<option th:each="region : ${regions}" th:value="${region.id}">[[${region.name}]]
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Đơn vị phụ trách:</label>
+								<select class="form-control select2 col-md-12" name="department_create"
+									id="department_create">
+									<option value="">Chọn đơn vị phụ trách</option>
+									<option th:each="department : ${departments}" th:value="${department.id}">
+										[[${department.name}]]</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary">Tạo</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div th:id="'modal_createATM2'" class="modal fade" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #63b175">
+						<span class="font-weight-bold modal-title" style="color: white; font-size: 20px">Chỉnh sửa
+							ATM</span>
+					</div>
+					<form id="formUpdateAtm" method="POST">
+						<div class="modal-body">
+							<input type="hidden" id="id_edit">
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Serial Number:</label>
+								<input type="text" class="col-md-12 form-control" id="serial_number_edit"
+									name="serial_number_edit" placeholder="Serial number">
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Địa chỉ:</label>
+								<input type="text" class="col-md-12 form-control" id="address_edit" name="address_edit"
+									placeholder="Địa chỉ">
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Dòng máy:</label>
+								<select class="form-control select2 col-md-12" name="series_edit" id="series_edit">
+									<option value="">Chọn dòng máy</option>
+									<option th:each="serie : ${series}" th:value="${serie.id}">[[${serie.name}]]
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Vùng:</label>
+								<select class="form-control select2 col-md-12" name="region_edit" id="region_edit">
+									<option value="">Chọn vùng</option>
+									<option th:each="region : ${regions}" th:value="${region.id}">[[${region.name}]]
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="device" class="col-md-12 col-form-label">Đơn vị phụ trách:</label>
+								<select class="form-control select2 col-md-12" name="department_edit"
+									id="department_edit">
+									<option value="">Chọn đơn vị phụ trách</option>
+									<option th:each="department : ${departments}" th:value="${department.id}">
+										[[${department.name}]]</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Đóng</button>
+							<button type="submit" class="btn btn-primary">Cập nhật</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</th:block>
+	<!-- Modal tạo mới -->
+	<!-- modal import -->
+	<form id="import-atm" enctype="multipart/form-data">
+		<div id="modal_import_atm_data" class="modal fade" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="font-weight-semibold modal-title">LỰA CHỌN FILE IMPORT</span>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-group form-group-float">
+							<input type="file" id="inputFile" name="inputFile" class="form-control-uniform"
+								accept=".xls,.xlsx" data-fouc>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+						<button type="button" id="btnImport" name="btnImport" class="btn bg-primary"><em
+								class="icon-download7 mr-2"></em>Import Excel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- /modal import -->
+	<div th:include="/commons/admin :: footer"></div>
+	<div th:include="/commons/admin :: js"></div>
+	<div th:include="/commons/pagination :: js"></div>
+	<script th:src="@{/assets/js/categories/atm.js}"></script>
+</body>
+
+</html>

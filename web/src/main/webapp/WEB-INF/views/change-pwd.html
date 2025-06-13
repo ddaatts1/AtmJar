@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Đổi mật khẩu</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div th:include="/commons/admin :: css"></div>
+	<div class="wrapper">
+		<div th:include="/commons/admin :: navbar"></div>
+		<div th:include="/commons/admin :: sidebar(parent='', item='')"></div>
+		
+		<div class="content-wrapper">
+			<div th:include="/commons/messages :: message"></div>
+			<div class="card">
+				<div class="card-header">
+					<h4>Đổi mật khẩu</h4>
+				</div>
+				<div class="card-body">
+					<form name="userForm" th:action="@{/change-pwd}" method="post" th:object="${user}">
+						<div class="card-body">
+							<input type="hidden" name="username" th:value="${username}">
+		            		<div class="row">
+			                  	<div class="form-group col-md-6 offset-md-3">
+				                    <label>Mật khẩu hiện tại</label>
+				                    <input type="password" class="form-control" name="password" required>
+			                  	</div>
+		                  	</div>
+		            		<div class="row">
+			                  	<div class="form-group col-md-6 offset-md-3">
+				                    <label>Mật khẩu mới</label>
+				                    <input type="text" class="form-control" name="newPwd" required>
+			                  	</div>
+		                  	</div>
+						</div>
+						<div style="float: right; margin-right: 25%;">
+			                <a th:href="@{/home}" type="button" class="btn btn-default" style="text-align: right;">Quay lại</a>
+			                <button type="submit" class="btn btn-primary" style="text-align: right;">Lưu</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<div th:include="/commons/admin :: footer"></div>
+<div th:include="/commons/admin :: js"></div>
+</body>
+</html>

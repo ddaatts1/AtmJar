@@ -1,0 +1,15 @@
+INSERT INTO `role` (`id`, `name`, `desc`) VALUES ('1', 'ROLE_ADMIN', 'Admin');
+INSERT INTO `role` (`id`, `name`, `desc`) VALUES ('2', 'ROLE_DEPLOYMENT', 'Triển khai');
+INSERT INTO `role` (`id`, `name`, `desc`) VALUES ('3', 'ROLE_ADMINISTRATIVE', 'Hành chính');
+INSERT INTO `role` (`id`, `name`, `desc`) VALUES ('4', 'ROLE_MONITOR', 'Giám sát');
+    
+INSERT INTO `user` (`id`, `username`, `password`, `is_actived`, `full_name`, `email`) VALUES ('1', 'admin', '$2a$10$HVDYe2xXH.LVuvL8N42NY.1sy/.qzp.CKldwe4P5ptw8cCqN57IC2', '1', 'admin', 'admin@gmail.com');
+    
+INSERT INTO `user_role` (`user_id`, `role_id`) VALUES ('1', '1');
+
+INSERT INTO `email_config` (`id`, `host`, `port`, `username`, `password`, `protocol`) VALUES ('1', 'smtp.gmail.com', '587', 'services.noreply@mitec.com.vn', 'Abc@12340987', 'smtp');
+
+INSERT INTO `series` (`id`, `name`) VALUES ('1', 'WN 2100');
+INSERT INTO `series` (`id`, `name`) VALUES ('2', 'CS 280');
+INSERT INTO `series` (`id`, `name`) VALUES ('3', 'WN C2070');
+INSERT INTO `series` (`id`, `name`) VALUES ('4', 'DN C2070');

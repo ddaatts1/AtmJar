@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReportPDF Editor</title>
+    <style>
+        #pdfPreview {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            position: relative;
+        }
+        .selected-position {
+            position: absolute;
+            border: 2px solid red;
+            background: rgba(255, 0, 0, 0.3);
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.min.js"></script>
+</head>
+<body>
+<h1>Upload ReportPDF and Specify Text Positions</h1>
+<form id="uploadForm" method="post" enctype="multipart/form-data" action="/report/upload">
+    <input type="file" id="reportFile" name="file" accept="application/pdf" required />
+    <br><br>
+    <label for="xPosition1">X Position 1:</label>
+    <input type="text" id="xPosition1" name="xPosition1" required />
+    <label for="yPosition1">Y Position 1:</label>
+    <input type="text" id="yPosition1" name="yPosition1" required />
+    <br><br>
+    <label for="xPosition2">X Position 2:</label>
+    <input type="text" id="xPosition2" name="xPosition2" required />
+    <label for="yPosition2">Y Position 2:</label>
+    <input type="text" id="yPosition2" name="yPosition2" required />
+    <br><br>
+    <label for="xPosition3">X Position 3:</label>
+    <input type="text" id="xPosition3" name="xPosition3" required />
+    <label for="yPosition3">Y Position 3:</label>
+    <input type="text" id="yPosition3" name="yPosition3" required />
+    <br><br>
+    <label for="xPosition4">X Position 4:</label>
+    <input type="text" id="xPosition4" name="xPosition4" required />
+    <label for="yPosition4">Y Position 4:</label>
+    <input type="text" id="yPosition4" name="yPosition4" required />
+    <br><br>
+    <button type="submit">Upload and Add Text</button>
+</form>
+<div id="pdfPreview"></div>
+
+<!-- Include PDF.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.min.js"></script>
+<script>
+    const reportFileInput = document.getElementById('reportFile');
+    const pdfPreview = document.getElementById('pdfPreview');
+    const xPositionInputs = [
+        document.getElementById('xPosition1'),
+        document.getElementById('xPosition2'),
+        document.getElementById('xPosition3'),
+        document.getElementById('xPosition4')
+    ];
+    const yPositionInputs = [
+        document.getElementById('yPosition1'),
+        document.getElementById('yPosition2'),
+        document.getElementById('yPosition3'),
+        document.getElementById('yPosition4')
+    ];
+    const scale = 1.5;
+
+    reportFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const pdfData = new Uint8Array(e.target.result);
+
+                pdfjsLib.getDocument({ data: pdfData }).promise.then((pdf) => {
+                    pdf.getPage(1).then((page) => {
+                        const viewport = page.getViewport({ scale });
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        pdfPreview.innerHTML = '';
+                        pdfPreview.appendChild(canvas);
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        page.render(renderContext);
+
+                        // Add click event to select position
+                        canvas.addEventListener('click', (e) => {
+                            const rect = canvas.getBoundingClientRect();
+                            const x = (e.clientX - rect.left) / scale;
+                            const y = (e.clientY - rect.top) / scale;
+
+                            // Remove existing selection
+                            document.querySelectorAll('.selected-position').forEach(el => el.remove());
+
+                            // Add new selection
+                            const positionDiv = document.createElement('div');
+                            positionDiv.className = 'selected-position';
+                            positionDiv.style.left = `${e.clientX - rect.left}px`;
+                            positionDiv.style.top = `${e.clientY - rect.top}px`;
+                            positionDiv.style.width = '100px'; // Adjust as needed
+                            positionDiv.style.height = '30px'; // Adjust as needed
+                            positionDiv.textContent = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
+                            pdfPreview.appendChild(positionDiv);
+
+                            // Update hidden input fields
+                            // (Update the position fields manually as needed)
+                            for (let i = 0; i < 4; i++) {
+                                if (!xPositionInputs[i].value && !yPositionInputs[i].value) {
+                                    xPositionInputs[i].value = Math.round(x);
+                                    yPositionInputs[i].value = Math.round(y);
+                                    break;
+                                }
+                            }
+                        });
+                    });
+                }).catch(err => {
+                    console.error('Error loading PDF:', err);
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    });
+</script>
+</body>
+</html>
